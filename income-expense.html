@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ចំណូលចំណាយ - សាលា អន្តរជាតិ អាយធីឃេ</title>
+    <link rel="icon" type="image/jpeg" href="img/1.jpg">
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <!-- Uicons -->
+    <link rel="preload" href="https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css"
+        as="style">
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+
+    <!-- Excel & PDF Export Tools -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+
+    <style>
+        :root {
+            --bs-pink-primary: rgb(31, 6, 55);
+            --bs-pink-dark: rgb(31, 6, 55);
+            --bs-pink-hover: #ff69b4;
+            --bs-body-bg: #f8f9fa;
+        }
+
+        .pulse-today {
+            animation: pulse-today-anim 2s infinite;
+        }
+
+        .col-md-2-4 {
+            width: 20%;
+        }
+
+        @media (max-width: 768px) {
+            .col-md-2-4 {
+                width: 33.33%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .col-md-2-4 {
+                width: 50%;
+            }
+        }
+
+        @keyframes pulse-today-anim {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 0 15px rgba(25, 135, 84, 0.4);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        body {
+            background-color: var(--bs-body-bg);
+            font-family: 'Khmer OS Battambang', sans-serif !important;
+            /* Layout handled by style.css */
+        }
+
+        /* Sidebar and Main Content styles managed by style.css */
+
+
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            height: 100%;
+            border-left: 4px solid var(--bs-pink-primary);
+        }
+
+        .stat-card.card-success {
+            border-left-color: #198754;
+        }
+
+        .stat-card.card-danger {
+            border-left-color: #dc3545;
+        }
+
+        /* Student Payment Enhancements */
+        .ls-1 {
+            letter-spacing: 1px;
+        }
+
+        .space-y-3>*+* {
+            margin-top: 1rem;
+        }
+
+        .rounded-4 {
+            border-radius: 1.5rem !important;
+        }
+
+        #studentSearchResults .list-group-item:hover {
+            background-color: #f0f7ff;
+            cursor: pointer;
+        }
+
+        .student-modal-header {
+            background: linear-gradient(135deg, #FF69B4 0%, #da1b60 100%);
+            border-bottom: none;
+        }
+
+        .tracking-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .tracking-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        .search-container {
+            transition: all 0.3s ease;
+        }
+
+        .search-container:focus-within {
+            transform: scale(1.02);
+        }
+
+        .pulse-urgent {
+            animation: pulse-red 2s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        .stat-card.card-primary {
+            border-left-color: #0d6efd;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .table thead th {
+            background-color: var(--bs-pink-primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 0.9rem;
+        }
+
+        .btn-pink {
+            background-color: var(--bs-pink-primary);
+            color: white;
+            border: none;
+        }
+
+        .btn-pink:hover {
+            background-color: var(--bs-pink-hover);
+            color: white;
+        }
+
+        .fab-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            z-index: 1050;
+        }
+
+        .fab-button {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            text-decoration: none;
+            position: relative;
+            margin-top: 15px;
+            /* Spacing between buttons */
+        }
+
+        .fab-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Student Payment Button - Blue/Purple */
+        .fab-student {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        /* Add Transaction Button - Pink (Primary) */
+        .fab-add {
+            background: linear-gradient(135deg, var(--bs-pink-primary), #ff69b4);
+            width: 65px;
+            /* Slightly larger */
+            height: 65px;
+            font-size: 1.2rem;
+        }
+
+        /* FAB Tooltip Label */
+        .fab-button::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            right: 75px;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            background: rgba(33, 37, 41, 0.9);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+            font-family: 'Khmer OS Battambang', sans-serif;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Arrow for tooltip */
+        .fab-button::before {
+            content: '';
+            position: absolute;
+            right: 69px;
+            top: 50%;
+            transform: translateY(-50%) translateX(10px);
+            border-width: 6px;
+            border-style: solid;
+            border-color: transparent transparent transparent rgba(33, 37, 41, 0.9);
+            border-right: 0;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .fab-button:hover::after,
+        .fab-button:hover::before {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        /* Specific icon adjustment */
+        .fab-button i {
+            transition: transform 0.3s ease;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--bs-pink-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Stabilize Table and Pagination */
+        #transactionsTableBody {
+            min-height: 500px;
+        }
+
+        .pagination .page-link {
+            min-width: 40px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 40px;
+            margin: 0 2px;
+            border-radius: 8px !important;
+            border: 1px solid #dee2e6;
+            color: var(--bs-pink-primary);
+            transition: all 0.2s;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--bs-pink-primary);
+            border-color: var(--bs-pink-primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(31, 6, 55, 0.2);
+        }
+
+        /* ... existing styles ... */
+        /* ... existing styles ... */
+        .table-responsive {
+            min-height: 550px;
+        }
+
+        /* === NEW: Ultra-Dynamic Payment Modal Styles === */
+        #studentPaymentModal .modal-content {
+            border-radius: 24px;
+            overflow: hidden;
+            border: none;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            background-color: #f8f9fc;
+        }
+
+        .student-modal-header {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            /* Deep Blue Gradient */
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            height: 100%;
+            border: 1px solid rgba(0, 0, 0, 0.02);
+        }
+
+        .profile-header-bg {
+            height: 120px;
+            background: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%);
+            position: relative;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            padding: 5px;
+            position: absolute;
+            bottom: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-avatar i {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            background: #f0f4f8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2a5298;
+        }
+
+        .stat-item {
+            background: #ffffff;
+            border-radius: 16px;
+            padding: 16px;
+            border: 1px solid #f1f5f9;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+            border-color: #66a6ff;
+        }
+
+        /* Modern Inputs Redesign */
+        .modern-input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .modern-input-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            color: #64748b;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .modern-input-group .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .modern-input-group .input-wrapper:focus-within {
+            background: white;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+        }
+
+        .modern-input-group .icon-box {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        .modern-input-group .input-wrapper:focus-within .icon-box {
+            color: #3b82f6;
+        }
+
+        .modern-input-group input,
+        .modern-input-group select,
+        .modern-input-group textarea {
+            border: none;
+            width: 100%;
+            padding: 12px 12px 12px 0;
+            font-size: 0.95rem;
+            outline: none;
+            background: transparent;
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        /* Table Polish */
+        .table-hover tbody tr:hover {
+            background-color: rgba(241, 245, 249, 0.6);
+            transform: scale(1.005);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .gradient-btn {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%) !important;
+            transition: filter 0.2s ease, transform 0.1s ease;
+        }
+
+        .gradient-btn:hover {
+            filter: brightness(110%);
+            transform: translateY(-1px);
+        }
+
+        /* Animation Classes */
+        .anim-fade-up {
+            animation: fadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.98);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Global Loader -->
+    <div id="global-loader">
+        <div class="loader-logo-container">
+            <img src="img/logo.jpg" alt="Loading..." class="loader-logo">
+            <div class="loader-ring"></div>
+        </div>
+        <p class="loader-text">កំពុងដំណើរការ</p>
+    </div>
+    <!-- Sidebar -->
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html">
+                <img src="img/logo.jpg" alt="School Logo" id="sidebar-logo">
+            </a>
+            <span class="sidebar-title-text text-white">
+                ប្រព័ន្ធគ្រប់គ្រង
+            </span>
+        </div>
+
+        <nav class="nav flex-column">
+            <a class="nav-link" href="index.html">
+                <i class="fi fi-rr-apps"></i> ផ្ទាំងគ្រប់គ្រង
+            </a>
+            <a class="nav-link" href="registration.html">
+                <i class="fi fi-rr-user-add"></i> ការចុះឈ្មោះសិស្ស
+            </a>
+            <a class="nav-link" href="data-tracking.html">
+                <i class="fi fi-rr-users-alt"></i> បញ្ជីទិន្នន័យសិស្ស
+            </a>
+            <a class="nav-link active" href="income-expense.html">
+                <i class="fi fi-rr-receipt"></i> ចំណូលចំណាយ
+            </a>
+            <a class="nav-link" href="inventory.html">
+                <i class="fi fi-rr-box-alt"></i> ស្តុកសម្ភារៈ
+            </a>
+            <a class="nav-link" href="user-management.html">
+                <i class="fi fi-rr-shield-check"></i> គ្រប់គ្រងអ្នកប្រើប្រាស់
+            </a>
+            <a class="nav-link" href="dropout-students.html">
+                <i class="fi fi-rr-user-remove"></i> សិស្សបោះបង់ការសិក្សា
+            </a>
+            <a class="nav-link" href="completed-students.html">
+                <i class="fi fi-rr-graduation-cap"></i> សិស្សបញ្ចប់ការសិក្សា
+            </a>
+        </nav>
+
+        <hr class="sidebar-divider my-2 mx-3" style="border-top: 1px solid rgba(255,255,255,0.3);">
+
+        <!-- User Profile Section -->
+        <div class="px-3 py-3 text-white border-top border-bottom border-white-10"
+            style="background: rgba(0,0,0,0.05);">
+            <div class="text-center">
+                <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2 shadow-sm"
+                    style="width: 50px; height: 50px;">
+                    <i class="fi fi-rr-user-circle text-primary fa-2x"></i>
+                </div>
+                <div style="font-size: 0.85rem;">
+                    <div class="fw-bold text-truncate mb-1" id="user-display-name" style="font-size: 1rem;">...
+                    </div>
+                    <div class="text-white-50 text-truncate mb-2" id="user-display-email" style="font-size: 0.75rem;">
+                        ...</div>
+                    <div class="badge bg-warning text-dark fw-normal" id="user-role-badge">...</div>
+                </div>
+            </div>
+        </div>
+
+        <a href="#" class="nav-link text-warning mt-1" onclick="handleLogout(event)">
+            <i class="fi fi-rr-sign-out-alt"></i> ចាកចេញ
+        </a>
+    </div>
+
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Loader -->
+        <!-- Loader Removed (Using Global Loader) -->
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">គ្រប់គ្រងហិរញ្ញវត្ថុ</h2>
+            <div class="d-flex gap-2 align-items-center">
+                <button class="btn btn-light position-relative border shadow-sm rounded-pill px-4"
+                    id="btnTodayNotification" onclick="viewStatusDetails('today')" style="display: none;">
+                    <i class="fi fi-rr-bell text-success me-1"></i> បង់ថ្ងៃនេះ
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm"
+                        id="todayPaymentBadge">0</span>
+                </button>
+                <button class="btn btn-outline-success" onclick="exportToExcel()">
+                    <i class="fi fi-rr-file-excel me-1"></i> Excel
+                </button>
+                <div class="dropdown">
+                    <button class="btn btn-outline-danger dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fi fi-rr-document-signed me-1"></i> ស្ថានភាពសិស្ស
+                    </button>
+                    <ul class="dropdown-menu shadow-lg border-0" style="min-width: 250px; border-radius: 12px;">
+                        <li>
+                            <h6 class="dropdown-header text-uppercase ls-1 small fw-bold text-muted mt-2">
+                                មើលព័ត៌មានលម្អិត (View Details)</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewStatusDetails('overdue')"><i
+                                    class="fi fi-rr-info me-2 text-danger"></i> ហួសកំណត់ (Overdue)</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewStatusDetails('today')"><i
+                                    class="fi fi-rr-info me-2 text-success"></i> បង់ថ្ងៃនេះ (Today)</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewStatusDetails('soon')"><i
+                                    class="fi fi-rr-info me-2 text-warning"></i> ជិតដល់ថ្ងៃ (Soon)</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="viewStatusDetails('postponed')"><i class="fi fi-rr-info me-2 text-info"></i>
+                                ពន្យាការបង់ (Postponed)</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)" onclick="viewStatusDetails('unpaid')"><i
+                                    class="fi fi-rr-info me-2 text-secondary"></i> ជំពាក់ (Debt)</a></li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <h6 class="dropdown-header text-uppercase ls-1 small fw-bold text-muted">ទាញយក PDF (Export
+                                PDF)</h6>
+                        </li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('overdue')"><i
+                                    class="fi fi-rr-file-pdf me-2 text-danger"></i> ហួសកំណត់</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('today')"><i
+                                    class="fi fi-rr-file-pdf me-2 text-success"></i> បង់ថ្ងៃនេះ</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('soon')"><i
+                                    class="fi fi-rr-file-pdf me-2 text-warning"></i> ជិតដល់ថ្ងៃ</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('postponed')"><i
+                                    class="fi fi-rr-file-pdf me-2 text-info"></i> ពន្យាការបង់</a></li>
+                        <li><a class="dropdown-item" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('unpaid')"><i
+                                    class="fi fi-rr-file-pdf me-2 text-secondary"></i> ជំពាក់</a></li>
+
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item fw-bold text-danger py-2" href="javascript:void(0)"
+                                onclick="generateStudentStatusReport('all')">
+                                <i class="fi fi-rr-briefcase me-2"></i> បញ្ជីរួមទាំងអស់ (Full Report)
+                            </a></li>
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-pink dropdown-toggle" data-bs-toggle="dropdown">
+                        <i class="fi fi-rr-print me-1"></i> របាយការណ៍
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" onclick="exportReport('daily')">ប្រចាំថ្ងៃ</a></li>
+                        <li><a class="dropdown-item" onclick="exportReport('monthly')">ប្រចាំខែ</a></li>
+                        <li><a class="dropdown-item" onclick="exportReport('yearly')">ប្រចាំឆ្នាំ</a></li>
+                        <li><a class="dropdown-item" onclick="openDateRangeModal()">ចន្លោះថ្ងៃ</a></li>
+                        <li><a class="dropdown-item" onclick="openAmountRangeModal()">ចន្លោះតម្លៃ</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Financial Stats -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="stat-card border-0 shadow-sm text-white position-relative overflow-hidden"
+                    style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                    <div class="position-relative z-1">
+                        <h6 class="text-white-50 text-uppercase ls-1 mb-3">សរុបចំណូល (Total Income)</h6>
+                        <h2 id="totalIncomeDisplay" class="display-5 fw-bold mb-0">$0.00</h2>
+                    </div>
+                    <i class="fa-solid fa-arrow-trend-up position-absolute end-0 bottom-0 mb-n2 me-3 opacity-25"
+                        style="font-size: 5rem;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card border-0 shadow-sm text-white position-relative overflow-hidden"
+                    style="background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);">
+                    <div class="position-relative z-1">
+                        <h6 class="text-white-50 text-uppercase ls-1 mb-3">សរុបចំណាយ (Total Expense)</h6>
+                        <h2 id="totalExpenseDisplay" class="display-5 fw-bold mb-0">$0.00</h2>
+                    </div>
+                    <i class="fa-solid fa-arrow-trend-down position-absolute end-0 bottom-0 mb-n2 me-3 opacity-25"
+                        style="font-size: 5rem;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card border-0 shadow-sm text-white position-relative overflow-hidden"
+                    style="background: linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%);">
+                    <div class="position-relative z-1">
+                        <h6 class="text-white-50 text-uppercase ls-1 mb-3">សមតុល្យ (Net Balance)</h6>
+                        <h2 id="netBalanceDisplay" class="display-5 fw-bold mb-0">$0.00</h2>
+                    </div>
+                    <i class="fa-solid fa-wallet position-absolute end-0 bottom-0 mb-n2 me-3 opacity-25"
+                        style="font-size: 5rem;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Student Payment Status Dashboard -->
+        <div class="row g-3 mb-4">
+            <!-- ហួសកំណត់ -->
+            <div class="col-md-2-4">
+                <div class="card border-0 shadow-sm h-100 hover-up" onclick="viewStatusDetails('overdue')"
+                    style="cursor: pointer; border-radius: 15px; background: #fff;">
+                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fi fi-rr-interrogation text-danger fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small mb-0 fw-bold" style="font-size: 0.75rem;">ហួសកំណត់</h6>
+                            <h4 id="reportOverdueStudents" class="fw-bold mb-0 text-danger" style="font-size: 1.2rem;">0
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ជិតដល់ថ្ងៃ -->
+            <div class="col-md-2-4">
+                <div class="card border-0 shadow-sm h-100 hover-up" onclick="viewStatusDetails('soon')"
+                    style="cursor: pointer; border-radius: 15px; background: #fff;">
+                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-warning bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fi fi-rr-clock text-warning fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small mb-0 fw-bold" style="font-size: 0.75rem;">ជិតដល់ថ្ងៃ</h6>
+                            <h4 id="reportSoonStudents" class="fw-bold mb-0 text-warning" style="font-size: 1.2rem;">0
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ពន្យាការបង់ -->
+            <div class="col-md-2-4">
+                <div class="card border-0 shadow-sm h-100 hover-up" onclick="viewStatusDetails('postponed')"
+                    style="cursor: pointer; border-radius: 15px; background: #fff;">
+                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-info bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fi fi-rr-hourglass-end text-info fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small mb-0 fw-bold" style="font-size: 0.75rem;">ពន្យាការបង់</h6>
+                            <h4 id="reportPostponedStudents" class="fw-bold mb-0 text-info" style="font-size: 1.2rem;">0
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- ជំពាក់ -->
+            <div class="col-md-2-4">
+                <div class="card border-0 shadow-sm h-100 hover-up" onclick="viewStatusDetails('unpaid')"
+                    style="cursor: pointer; border-radius: 15px; background: #fff;">
+                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-secondary bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fi fi-rr-coins text-secondary fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small mb-0 fw-bold" style="font-size: 0.75rem;">ជំពាក់</h6>
+                            <h4 id="reportUnpaidStudents" class="fw-bold mb-0 text-secondary"
+                                style="font-size: 1.2rem;">
+                                0</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- សិស្សបង់ប្រាក់ថ្ងៃនេះ -->
+            <div class="col-md-2-4">
+                <div class="card border-0 shadow-sm h-100 hover-up" onclick="viewStatusDetails('today')"
+                    style="cursor: pointer; border-radius: 15px; background: #fff;">
+                    <div class="card-body p-2 d-flex align-items-center gap-2">
+                        <div class="rounded-circle bg-success bg-opacity-10 d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fi fi-rr-calendar-check text-success fs-5"></i>
+                        </div>
+                        <div>
+                            <h6 class="text-muted small mb-0 fw-bold" style="font-size: 0.75rem;">ត្រូវបង់ថ្ងៃនេះ</h6>
+                            <h4 id="reportTodayStudents" class="fw-bold mb-0 text-success" style="font-size: 1.2rem;">
+                                0</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+
+        <!-- Student Count Report Section -->
+
+
+        <!-- Table Section -->
+        <div class="table-container">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="mb-0 fw-bold">បញ្ជីប្រតិបត្តិការ</h5>
+                    <span class="badge bg-light text-dark border"><span id="displayCount">0</span> / <span
+                            id="totalCount">0</span></span>
+                </div>
+                <div class="d-flex gap-2">
+                    <select id="reportTypeSelector" class="form-select form-select-sm" style="width: 150px;"
+                        onchange="renderTable(true)">
+                        <option value="all">ទាំងអស់</option>
+                        <option value="income">ចំណូល</option>
+                        <option value="expense">ចំណាយ</option>
+                    </select>
+                    <input type="text" id="searchDescription" class="form-control form-control-sm"
+                        placeholder="ស្វែងរក..." style="width: 250px;">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center"><i class="fi fi-rr-calendar me-1"></i>កាលបរិច្ឆេទ</th>
+                            <th class="text-center"><i class="fi fi-rr-settings-sliders me-1"></i>ប្រភេទ</th>
+                            <th><i class="fi fi-rr-label me-1"></i>ប្រភព/ចំណាយ</th>
+                            <th><i class="fi fi-rr-user me-1"></i>អ្នកបង់</th>
+                            <th><i class="fi fi-rr-user-robot me-1"></i>អ្នកទទួល</th>
+                            <th><i class="fi fi-rr-comment-alt me-1"></i>ការបរិយាយ</th>
+                            <th class="text-end"><i class="fi fi-rr-dollar me-1"></i>ចំនួនទឹកប្រាក់ ($)</th>
+                            <th class="text-end"><i class="fi fi-rr-money me-1"></i>ចំនួនទឹកប្រាក់ (៛)</th>
+
+                            <th class="text-center"><i class="fi fi-rr-menu-dots me-1"></i>សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactionsTableBody">
+                        <!-- Content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <nav class="mt-4">
+                <ul class="pagination justify-content-start" id="paginationControls"></ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- FABs -->
+    <div class="fab-container">
+        <!-- Student Payment Button (Blue) -->
+        <button class="fab-button fab-student" onclick="openStudentPaymentModal()"
+            data-tooltip="បង់ប្រាក់សិស្ស (Student Payment)">
+            <i class="fa-solid fa-user-graduate fa-lg"></i>
+        </button>
+
+        <!-- Add Transaction Button (Pink/Main) -->
+        <button class="fab-button fab-add" data-bs-toggle="modal" data-bs-target="#transactionModal"
+            data-tooltip="បញ្ចូលចំណូល/ចំណាយ (Add Transaction)">
+            <i class="fa-solid fa-plus fa-lg"></i>
+        </button>
+    </div>
+
+    <!-- Modal Transaction -->
+    <div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 15px;">
+                <div class="modal-header bg-pink text-white"
+                    style="border-radius: 15px 15px 0 0; background-color: var(--bs-pink-primary);">
+                    <h5 class="modal-title" id="modalTitle">បន្ថែមចំណូល/ចំណាយ</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form id="transactionForm">
+                    <div class="modal-body p-4">
+                        <input type="hidden" id="editTransactionId">
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">ប្រភេទប្រតិបត្តិការ</label>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="transType" id="typeIncome"
+                                        value="income" checked>
+                                    <label class="btn btn-outline-success" for="typeIncome">ចំណូល (Income)</label>
+
+                                    <input type="radio" class="btn-check" name="transType" id="typeExpense"
+                                        value="expense">
+                                    <label class="btn btn-outline-danger" for="typeExpense">ចំណាយ (Expense)</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">កាលបរិច្ឆេទ</label>
+                                <input type="date" id="transDate" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">ទឹកប្រាក់ (USD)</label>
+                                <input type="number" id="transAmount" class="form-control" step="0.01"
+                                    placeholder="0.00">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">ទឹកប្រាក់ (KHR)</label>
+                                <input type="number" id="transAmountKH" class="form-control" placeholder="0">
+                            </div>
+
+
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">អ្នកបង់/អ្នកចំណាយ</label>
+                                <input type="text" id="transPayer" class="form-control" placeholder="ឈ្មោះអ្នកបង់">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">អ្នកទទួល</label>
+                                <input type="text" id="transReceiver" class="form-control" placeholder="ឈ្មោះអ្នកទទួល">
+                            </div>
+
+                            <div class="col-12" id="incomeSourceRow">
+                                <label class="form-label fw-bold">ប្រភពចំណូល</label>
+                                <input type="text" id="transIncomeSource" class="form-control"
+                                    placeholder="ឧ. ចុះឈ្មោះសិស្ស, លក់សៀវភៅ...">
+                            </div>
+                            <div class="col-12 d-none" id="expenseCategoryRow">
+                                <label class="form-label fw-bold">ប្រភេទចំណាយ</label>
+                                <select id="transExpenseCategory" class="form-select">
+                                    <option value="">-- ជ្រើសរើសប្រភេទចំណាយ --</option>
+                                    <option value="ប្រាក់ខែបុគ្គលិក">ប្រាក់ខែបុគ្គលិក</option>
+                                    <option value="ថ្លៃអគ្គិសនី/ទឹក">ថ្លៃអគ្គិសនី/ទឹក</option>
+                                    <option value="ថ្លៃឈ្នួលផ្ទះ">ថ្លៃឈ្នួលផ្ទះ</option>
+                                    <option value="ទិញសម្ភារៈ">ទិញសម្ភារៈ</option>
+                                    <option value="ទីផ្សារ/ផ្សព្វផ្សាយ">ទីផ្សារ/ផ្សព្វផ្សាយ</option>
+                                    <option value="ផ្សេងៗ">ផ្សេងៗ</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label fw-bold">ការបរិយាយបន្ថែម</label>
+                                <textarea id="transDescription" class="form-control" rows="2"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light rounded-pill px-4"
+                            data-bs-dismiss="modal">បោះបង់</button>
+                        <button type="submit" class="btn btn-pink rounded-pill px-4">រក្សាទុក</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student Payment Modal -->
+    <div class="modal fade" id="studentPaymentModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header student-modal-header text-white border-0">
+                    <h5 class="modal-title d-flex align-items-center">
+                        <i class="fi fi-rr-wallet me-2"></i>បង់ប្រាក់សិស្ស (Student Payment)
+                    </h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <button type="button" class="btn btn-sm btn-light rounded-pill px-3 shadow-sm"
+                            onclick="openMonthlyTrackingModal()">
+                            <i class="fi fi-rr-chart-histogram me-1"></i>របាយការណ៍
+                        </button>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                </div>
+                <div class="modal-body p-0" style="background: #f4f6f9; min-height: 600px;">
+                    <!-- Search Area (Top Fixed) -->
+                    <div class="bg-white p-4 border-bottom shadow-sm z-2 position-relative">
+                        <div class="row">
+                            <div class="col-md-6 mx-auto">
+                                <div class="position-relative">
+                                    <div
+                                        class="input-group input-group-lg shadow-sm border rounded-pill overflow-hidden bg-white search-container">
+                                        <span class="input-group-text bg-white border-0 ps-4 text-primary">
+                                            <i class="fi fi-rr-search"></i>
+                                        </span>
+                                        <input type="text" id="studentSearchInput" class="form-control border-0 py-3"
+                                            placeholder="ស្វែងរកឈ្មោះសិស្ស ឬ ID..."
+                                            style="font-size: 1.1rem; box-shadow: none;">
+                                        <button class="btn btn-primary px-4 rounded-pill m-1 fw-bold"
+                                            type="button">ស្វែងរក</button>
+                                    </div>
+                                    <div id="studentSearchResults" class="list-group shadow-lg mt-2 overflow-auto"
+                                        style="display: none; position: absolute; width: 100%; z-index: 1060; border-radius: 12px; max-height: 400px; top: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Content Area -->
+                    <div class="p-4">
+                        <div id="studentPaymentEmpty" class="text-center py-5 anim-fade-up">
+                            <div class="bg-white rounded-circle p-4 d-inline-block shadow-sm mb-3">
+                                <i class="fi fi-rr-users-alt fa-3x text-primary opacity-50"></i>
+                            </div>
+                            <h5 class="text-muted fw-bold">មិនទាន់ជ្រើសរើសសិស្ស</h5>
+                            <p class="text-muted small">សូមស្វែងរក និងជ្រើសរើសឈ្មោះសិស្សដើម្បីបង់ប្រាក់</p>
+                        </div>
+
+                        <div id="studentPaymentContent" style="display: none;" class="anim-fade-up">
+                            <div class="row g-4">
+                                <!-- Col 1: Student Profile -->
+                                <div class="col-lg-4">
+                                    <div class="profile-card">
+                                        <div class="profile-header-bg">
+                                            <div
+                                                class="position-absolute top-0 end-0 m-3 badge bg-white bg-opacity-25 border border-white rounded-pill px-3">
+                                                <i class="fi fi-rr-check-circle me-1"></i>Active
+                                            </div>
+                                        </div>
+                                        <div class="text-center px-4 pb-4">
+                                            <div class="profile-avatar mb-3">
+                                                <i class="fi fi-rr-user fa-3x text-primary"></i>
+                                            </div>
+                                            <h4 id="stuNameDisplay" class="fw-bold mb-1 fs-5">---</h4>
+                                            <p id="stuIdDisplay" class="text-muted small fw-medium mb-4">ID: ---</p>
+
+                                            <div class="row g-2 mb-4 text-start">
+                                                <div class="col-12">
+                                                    <div
+                                                        class="p-2 px-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                                                        <span class="small text-muted"><i
+                                                                class="fi fi-rr-book-alt me-2 text-primary"></i>កម្រិត</span>
+                                                        <span id="stuLevelDisplay"
+                                                            class="fw-bold small text-dark">---</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div
+                                                        class="p-2 px-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                                                        <span class="small text-muted"><i
+                                                                class="fi fi-rr-clock me-2 text-info"></i>ម៉ោង</span>
+                                                        <span id="stuTimeDisplay"
+                                                            class="fw-bold small text-dark">---</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div
+                                                        class="p-2 px-3 bg-light rounded-3 d-flex justify-content-between align-items-center">
+                                                        <span class="small text-muted"><i
+                                                                class="fi fi-rr-calendar-clock me-2 text-warning"></i>ដល់ថ្ងៃ</span>
+                                                        <span id="stuDueDateDisplay"
+                                                            class="fw-bold small text-danger">---</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row g-2">
+                                                <div class="col-6">
+                                                    <div class="stat-item h-100 text-center">
+                                                        <p class="small text-success fw-bold text-uppercase mb-1"
+                                                            style="font-size: 0.65rem;">បានបង់ (Paid)</p>
+                                                        <h5 id="stuTotalPaidDisplay" class="fw-bold text-success mb-0">
+                                                            $0.00</h5>
+                                                    </div>
+                                                </div>
+                                                <div class="col-6">
+                                                    <div class="stat-item h-100 text-center"
+                                                        style="background:#fff5f5; border-color:#ffe0e0;">
+                                                        <p class="small text-danger fw-bold text-uppercase mb-1"
+                                                            style="font-size: 0.65rem;">ជំពាក់ (Debt)</p>
+                                                        <h5 id="stuBalanceDisplay" class="fw-bold text-danger mb-0">
+                                                            $0.00</h5>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Col 2: Action Area -->
+                                <div class="col-lg-8">
+                                    <!-- History View -->
+                                    <div id="historyTableContainer" class="card border-0 shadow-sm h-100 glass-card">
+                                        <div
+                                            class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="fw-bold mb-1 text-dark">ប្រវត្តិការបង់ប្រាក់</h5>
+                                                <p class="text-muted small mb-0">Transactions History (<span
+                                                        id="installmentCount">0</span>)</p>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-light rounded-circle shadow-sm"
+                                                    style="width: 40px; height: 40px;"
+                                                    onclick="printFullStudentStatement()" title="Print All">
+                                                    <i class="fi fi-rr-print text-dark"></i>
+                                                </button>
+                                                <button
+                                                    class="btn btn-primary rounded-pill px-4 shadow-sm fw-bold gradient-btn"
+                                                    onclick="showAddInstallmentForm()"
+                                                    style="background: linear-gradient(135deg, #1a2980, #26d0ce); border: none;">
+                                                    <i class="fi fi-rr-plus me-2"></i>បង់ថ្មី
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body p-0 mt-2">
+                                            <div class="table-responsive px-2">
+                                                <table class="table table-hover align-middle">
+                                                    <thead class="bg-light small custom-header">
+                                                        <tr class="text-secondary text-uppercase"
+                                                            style="font-size: 0.75rem;">
+                                                            <th class="ps-4 py-3 border-0 rounded-start">
+                                                                ព័ត៌មានបង់ប្រាក់
+                                                            </th>
+                                                            <th class="py-3 border-0">កាលបរិច្ឆេទ</th>
+                                                            <th class="py-3 border-0">ទឹកប្រាក់</th>
+                                                            <th class="py-3 border-0 text-center">ចំនួនខែ</th>
+                                                            <th class="py-3 border-0">យោង/ចំណាំ</th>
+                                                            <th class="py-3 border-0 rounded-end text-end pe-4">សកម្មភាព
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="stuInstallmentHistory" class="border-0">
+                                                        <!-- Filled by JS -->
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Add New Payment Form (Dynamic Panel) -->
+                                    <div id="addInstallmentContainer" class="card border-0 shadow-sm h-100 glass-card"
+                                        style="display: none;">
+                                        <div
+                                            class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <h5 class="fw-bold mb-1 text-primary">បន្ថែមការបង់ប្រាក់ថ្មី</h5>
+                                                <p class="text-muted small mb-0">New Payment Entry</p>
+                                            </div>
+                                            <button type="button" class="btn btn-light rounded-circle shadow-sm"
+                                                style="width: 40px; height: 40px;" onclick="hideAddInstallmentForm()">
+                                                <i class="fi fi-rr-arrow-small-left text-dark fs-5"></i>
+                                            </button>
+                                        </div>
+
+                                        <div class="card-body p-4">
+                                            <form id="newInstallmentForm">
+                                                <input type="hidden" name="selectedStudentKey">
+
+                                                <div class="row g-3">
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label>កាលបរិច្ឆេទ (Date)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i class="fi fi-rr-calendar"></i>
+                                                                </div>
+                                                                <input type="date" id="payDate" name="payDate" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label>ទឹកប្រាក់ (Amount $)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i class="fi fi-rr-dollar"></i>
+                                                                </div>
+                                                                <input type="number" name="payAmount" step="0.01"
+                                                                    class="text-primary fw-bold"
+                                                                    style="font-size: 1.1rem;" placeholder="0.00"
+                                                                    required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label>សម្រាប់ខែ (For Month)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i
+                                                                        class="fi fi-rr-calendar-check"></i></div>
+                                                                <select name="forMonth">
+                                                                    <option value="">-- Select Month --</option>
+                                                                    <option value="មករា">មករា (Jan)</option>
+                                                                    <option value="កុម្ភៈ">កុម្ភៈ (Feb)</option>
+                                                                    <option value="មីនា">មីនា (Mar)</option>
+                                                                    <option value="មេសា">មេសា (Apr)</option>
+                                                                    <option value="ឧសភា">ឧសភា (May)</option>
+                                                                    <option value="មិថុនា">មិថុនា (Jun)</option>
+                                                                    <option value="កក្កដា">កក្កដា (Jul)</option>
+                                                                    <option value="សីហា">សីហា (Aug)</option>
+                                                                    <option value="កញ្ញា">កញ្ញា (Sep)</option>
+                                                                    <option value="តុលា">តុលា (Oct)</option>
+                                                                    <option value="វិច្ឆិកា">វិច្ឆិកា (Nov)</option>
+                                                                    <option value="ធ្នូ">ធ្នូ (Dec)</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label>រយៈែពល (Duration)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i class="fi fi-rr-clock"></i>
+                                                                </div>
+                                                                <select name="payMonths">
+                                                                    <option value="1">1 ខែ (1 Month)</option>
+                                                                    <option value="2">2 ខែ (2 Months)</option>
+                                                                    <option value="3">3 ខែ (3 Months)</option>
+                                                                    <option value="6">6 ខែ (6 Months)</option>
+                                                                    <option value="12">1 ឆ្នាំ (1 Year)</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label>អ្នកទទួល (Received By)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i
+                                                                        class="fi fi-rr-user-check"></i></div>
+                                                                <input type="text" name="payReceiver" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="modern-input-group">
+                                                            <label class="text-danger">ថ្ងៃកំណត់ថ្មី (Next Due
+                                                                Date)</label>
+                                                            <div class="input-wrapper"
+                                                                style="border-color: #ffcdd2; background: #fffbfb;">
+                                                                <div class="icon-box text-danger"><i
+                                                                        class="fi fi-rr-calendar-exclamation"></i></div>
+                                                                <input type="date" name="nextPayDateManual"
+                                                                    id="nextPayDateManual" class="text-danger fw-bold">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="col-12">
+                                                        <div class="modern-input-group">
+                                                            <label>សំគាល់ (Note)</label>
+                                                            <div class="input-wrapper">
+                                                                <div class="icon-box"><i
+                                                                        class="fi fi-rr-comment-alt"></i></div>
+                                                                <textarea name="payNote" rows="2"
+                                                                    placeholder="Note..."></textarea>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-4 d-flex justify-content-end gap-2">
+                                                    <button type="button"
+                                                        class="btn btn-light rounded-pill px-4 fw-medium"
+                                                        onclick="hideAddInstallmentForm()">Cancel</button>
+                                                    <button type="submit"
+                                                        class="btn btn-primary rounded-pill px-5 fw-bold shadow-lg"
+                                                        style="background: linear-gradient(135deg, #1a2980, #26d0ce); border: none;">
+                                                        <i class="fi fi-rr-disk me-2"></i>Save Payment
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Date Range Modal -->
+    <div class="modal fade" id="dateRangeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px;">
+                <div class="modal-header bg-pink text-white"
+                    style="border-radius: 15px 15px 0 0; background-color: var(--bs-pink-primary);">
+                    <h5 class="modal-title">ជ្រើសរើសចន្លោះកាលបរិច្ឆេទ</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ចាប់ពីថ្ងៃ</label>
+                        <input type="date" id="rangeStartDate" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ដល់ថ្ងៃ</label>
+                        <input type="date" id="rangeEndDate" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light rounded-pill px-4"
+                        data-bs-dismiss="modal">បោះបង់</button>
+                    <button type="button" class="btn btn-pink rounded-pill px-4"
+                        onclick="handleRangeReport()">ទាញយករបាយការណ៍</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Amount Range Modal -->
+    <div class="modal fade" id="amountRangeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" style="border-radius: 15px;">
+                <div class="modal-header bg-pink text-white"
+                    style="border-radius: 15px 15px 0 0; background-color: var(--bs-pink-primary);">
+                    <h5 class="modal-title">ជ្រើសរើសចន្លោះទឹកប្រាក់ (Amount Range)</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ចាប់ពីចំនួន ($)</label>
+                        <input type="number" id="minAmountRange" class="form-control" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">ដល់ចំនួន ($)</label>
+                        <input type="number" id="maxAmountRange" class="form-control" placeholder="1000.00" step="0.01">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light rounded-pill px-4"
+                        data-bs-dismiss="modal">បោះបង់</button>
+                    <button type="button" class="btn btn-pink rounded-pill px-4"
+                        onclick="handleAmountRangeReport()">ទាញយករបាយការណ៍</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="report-functions.js"></script>
+    <script src="auth-check.js"></script>
+    <script src="income-expense-script.js"></script>
+
+    <script src="loader.js"></script>
+    <script src="sidebar-loader.js"></script>
+    <script src="sidebar-mobile.js"></script>
+</body>
+
+</html>

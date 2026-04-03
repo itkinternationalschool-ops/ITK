@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="km">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>បញ្ចូលពិន្ទុប្រចាំខែ - ប្រព័ន្ធគ្រូបង្រៀន</title>
+    <link rel="icon" type="image/jpeg" href="img/1.jpg">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Icons -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
+    
+    <!-- SweetAlert2 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    
+    <!-- Animations -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <style>
+        @font-face {
+            font-family: 'Khmer OS Battambang';
+            src: url('fonts/KhmerOSBattambang.woff2') format('woff2');
+            font-weight: normal;
+        }
+
+        body {
+            font-family: 'Khmer OS Battambang', sans-serif !important;
+            background-color: #f0f2f5;
+        }
+
+        .login-card {
+            max-width: 450px;
+            margin: 100px auto;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            border: none;
+            overflow: hidden;
+            background: white;
+        }
+
+        .login-header {
+            background: linear-gradient(135deg, #1f0637 0%, #3f0d6d 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .login-header i {
+            font-size: 3rem;
+            margin-bottom:  profile;
+        }
+
+        .score-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.05);
+            padding: 30px;
+            margin-top: 20px;
+        }
+
+        .teacher-info-banner {
+            background: #fff;
+            border-left: 5px solid #1f0637;
+            padding: 15px 25px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .score-table input {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            transition: all 0.3s;
+        }
+
+        .score-table input:focus {
+            border-color: #1f0637;
+            box-shadow: 0 0 0 0.2rem rgba(31, 6, 55, 0.1);
+            outline: none;
+        }
+
+        .grading-panel {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+
+        .summary-box {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            color: white;
+        }
+
+        .summary-passed { background-color: #28a745; }
+        .summary-failed { background-color: #dc3545; }
+
+        .score-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+            color: white;
+        }
+
+        .table thead th {
+            background-color: #1f0637 !important;
+            color: white !important;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .table tbody td {
+            text-align: center;
+            vertical-align: middle;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .score-container {
+                padding: 15px;
+            }
+            .teacher-info-banner {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+        }
+
+        /* Print & PDF Styling - Standard Dynamic Layout Portrait */
+        #print-header {
+            display: none;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .print-only {
+            display: none !important;
+        }
+
+        .print-summary-section {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background-color: white !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                font-family: 'Times New Roman', 'Khmer OS Battambang', serif !important;
+            }
+            #sidebar, #mobile-top-bar, #login-section, .score-header, .grading-panel, .teacher-info-banner, .summary-box, .btn-save, #monthSelectContainer, .btn-print-pdf, .p-3.border.rounded.shadow-sm.bg-white, .action-column {
+                display: none !important;
+            }
+            /* Hide empty rows during print */
+            tr.empty-row-print {
+                display: none !important;
+            }
+            #main-content {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .score-container {
+                box-shadow: none !important;
+                padding: 0 !important;
+                margin-top: 0 !important;
+            }
+            #print-header {
+                display: block !important;
+            }
+            @page {
+                size: A4 portrait;
+                margin: 0.5cm;
+            }
+            .table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                font-size: 0.72rem !important;
+                table-layout: fixed !important;
+                border: 2px solid black !important;
+            }
+            .table th, .table td {
+                padding: 4px 1px !important;
+                border: 1.5px solid black !important;
+                color: black !important;
+                height: 28px;
+                vertical-align: middle !important;
+            }
+            .table th {
+                background-color: #f2f2f2 !important; /* Professional light gray header */
+                color: black !important;
+                height: 90px; /* Tall headers for rotation */
+                vertical-align: bottom !important;
+                text-align: center !important;
+                font-weight: bold !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .table td.pass-cell { background-color: #d4edda !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .table td.fail-cell { background-color: #f8d7da !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .table td.grade-a { background-color: #cce5ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .table td.grade-f { background-color: #f8d7da !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            
+            /* Vertical Header logic */
+            .vertical-th {
+                writing-mode: vertical-lr;
+                transform: rotate(180deg);
+                text-align: left !important;
+                padding-bottom: 5px !important;
+                padding-left: 8px !important;
+                white-space: nowrap;
+            }
+
+            /* Precise widths for A4 Portrait */
+            .table th:nth-child(1) { width: 32px !important; }  /* N.O */
+            .table th:nth-child(2) { width: 75px !important; }  /* ID */
+            .table th:nth-child(3) { width: 155px !important; } /* Student Name */
+            .table th:nth-child(4) { width: 38px !important; }  /* Sex */
+            /* Score columns 5 to 10 */
+            .table th:nth-child(5), .table th:nth-child(6), .table th:nth-child(7), 
+            .table th:nth-child(8), .table th:nth-child(9), .table th:nth-child(10) { 
+                width: 35px !important; 
+            }
+            /* Result-related columns 11 to 15 */
+            .table th:nth-child(11) { width: 45px !important; } /* Total */
+            .table th:nth-child(12) { width: 45px !important; } /* Average */
+            .table th:nth-child(13) { width: 45px !important; } /* Result */
+            .table th:nth-child(14) { width: 35px !important; } /* Rank */
+            .table th:nth-child(15) { width: 35px !important; } /* Grade */
+
+            .print-summary-section {
+                display: block !important;
+                margin-top: 15px;
+                font-size: 0.85rem;
+                line-height: 1.4;
+            }
+            .score-footer {
+                display: flex !important;
+                margin-top: 10px !important;
+                font-size: 0.85rem !important;
+                border-top: none !important;
+                justify-content: space-between;
+                align-items: flex-start;
+            }
+            .footer-right {
+                text-align: center;
+                width: 200px;
+            }
+            .teacher-signature {
+                margin-top: 60px;
+                font-weight: bold;
+            }
+        }
+
+        /* Print Header Refinement */
+        .school-info { text-align: left; }
+        .school-logo { width: 70px; margin-bottom: 5px; }
+        .school-name-kh { font-size: 1.1rem; font-weight: bold; margin: 0; font-family: 'Khmer OS Muol Light'; }
+        .school-name-en { font-size: 0.8rem; font-weight: bold; margin: 0; }
+        .kingdom-info { text-align: center; }
+        .kingdom-kh { font-size: 1.1rem; font-weight: bold; margin: 0; }
+        .kingdom-en { font-size: 0.85rem; margin: 0; }
+        .khmer-number { font-size: 2rem; margin-top: 5px; font-family: 'Khmer OS Muol Light'; }
+        .header-content { text-align: center; border-top: 1px solid #000; margin-top: 5px; padding-top: 5px; }
+        .program-title { font-size: 1.3rem; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
+    </style>
+
+</head>
+
+<body>
+    <!-- Sidebar Placeholder (Will be loaded via sidebar-loader.js) -->
+    <div id="sidebar"></div>
+
+    <div id="main-content">
+        <!-- Tablet/Mobile Sidebar Header -->
+        <div id="mobile-top-bar" class="d-lg-none">
+            <button class="mobile-toggle-btn" id="mobileToggleButton">
+                <i class="fi fi-rr-menu-burger"></i>
+            </button>
+            <div class="mobile-brand">ប្រព័ន្ធគ្រូបង្រៀន</div>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section" class="animate__animated animate__fadeIn">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fi fi-rr-user-lock"></i>
+                    <h3 class="mt-3">ប្រព័ន្ធគ្រូបង្រៀន</h3>
+                    <p class="opacity-75">សូមចូលប្រើប្រាស់ដើម្បីបញ្ចូលពិន្ទុ</p>
+                </div>
+                <div class="card-body p-4">
+                    <form id="teacherLoginForm">
+                        <div class="mb-3">
+                            <label class="form-label text-dark fw-bold">ជ្រើសរើសឈ្មោះគ្រូ</label>
+                            <select id="teacherSelect" class="form-select form-select-lg" required>
+                                <option value="" disabled selected>-- កំពុងទាញយកឈ្មោះគ្រូ... --</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label text-dark fw-bold">លេខកូដសម្ងាត់</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fi fi-rr-lock"></i>
+                                </span>
+                                <input type="password" id="teacherSecret" class="form-control form-control-lg border-start-0 border-end-0 bg-light" placeholder="បញ្ចូលលេខកូដ" required>
+                                <span class="input-group-text bg-light border-start-0 cursor-pointer" id="togglePassword">
+                                    <i class="fi fi-rr-eye text-muted"></i>
+                                </span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-pink-primary w-100 btn-lg rounded-pill py-3 fw-bold shadow-sm">
+                            ចូលទៅកាន់ការបញ្ចូលពិន្ទុ
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Entry Section (Hidden by default) -->
+        <div id="score-section" class="d-none animate__animated animate__fadeInUp">
+            <div class="teacher-info-banner">
+                <div>
+                    <span class="text-muted small d-block">គ្រូបង្រៀន៖</span>
+                    <span id="displayTeacherName" class="fw-bold fs-5 text-pink-primary"></span>
+                </div>
+                <div class="text-end">
+                    <span class="text-muted small d-block">កាលបរិច្ឆេទ៖</span>
+                    <span id="displayDate" class="fw-bold fs-5 text-pink-primary"></span>
+                </div>
+            </div>
+
+            <!-- Print Header (Hidden on screen) -->
+            <div id="print-header">
+                <div class="print-header-top d-flex justify-content-between align-items-start">
+                    <div class="logo-area text-center">
+                        <img src="img/logo.jpg" alt="ITK Logo" style="width: 80px; height: 80px;">
+                        <div style="font-family: 'Khmer OS Muol Light', serif; font-size: 0.9rem; margin-top: 5px;">សាលាអន្តរជាតិ អាយធីខេ</div>
+                        <div style="font-size: 0.7rem;">ITK INTERNATIONAL SCHOOL</div>
+                        <div style="font-size: 0.6rem; margin-top: 2px;">.........................................</div>
+                    </div>
+                    <div class="header-center text-center mt-3">
+                        <div class="program-title" style="font-size: 1.4rem; font-weight: 800; text-decoration: underline;">GENERAL ENGLISH PROGRAM (GEP)</div>
+                        <div class="result-subtitle" style="font-size: 1rem; font-weight: 700; margin-top: 8px;">
+                            Exam Result for <span id="print-month">........</span> | Academic Year (2025-2026)
+                        </div>
+                        <div class="level-info" style="font-size: 0.9rem; font-weight: 600; margin-top: 5px;">
+                            English Level: K2 | ROOM: LAB1 | Time: 5:00PM-6:00PM
+                        </div>
+                    </div>
+                    <div class="header-right text-end">
+                        <div style="font-weight: bold; font-size: 0.9rem;">Kingdom of Cambodia</div>
+                        <div style="font-size: 0.8rem;">National Region King</div>
+                        <div style="font-size: 1.8rem; font-weight: 1000; margin-top: 10px;">6</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="score-container">
+                <div class="score-header row g-2">
+                    <div class="col-md-3">
+                        <h5 class="mb-0 text-pink-primary fw-bold"><i class="fi fi-rr-edit me-2"></i>បញ្ចូលពិន្ទុ</h5>
+                    </div>
+                    <div class="col-md-3">
+                        <select id="periodSelect" class="form-select border-pink shadow-sm fw-bold">
+                            <option value="monthly">ពិន្ទុប្រចាំខែ (Monthly)</option>
+                            <option value="semester1">ពិន្ទុប្រចាំឆមាសទី ១</option>
+                            <option value="semester2">ពិន្ទុប្រចាំឆមាសទី ២</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3" id="monthSelectContainer">
+                        <select id="monthSelect" class="form-select border-pink shadow-sm fw-bold text-primary">
+                            <option value="" disabled selected>-- ជ្រើសរើសខែ --</option>
+                            <option value="January">មករា (January)</option>
+                            <option value="February">កុម្ភៈ (February)</option>
+                            <option value="March">មីនា (March)</option>
+                            <option value="April">មេសា (April)</option>
+                            <option value="May">ឧសភា (May)</option>
+                            <option value="June">មិថុនា (June)</option>
+                            <option value="July">កក្កដា (July)</option>
+                            <option value="August">សីហា (August)</option>
+                            <option value="September">កញ្ញា (September)</option>
+                            <option value="October">តុលា (October)</option>
+                            <option value="November">វិច្ឆិកា (November)</option>
+                            <option value="December">ធ្នូ (December)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 d-flex gap-2">
+                        <button onclick="saveSelectedScores()" class="btn btn-outline-success w-100 p-2 action-column">
+                            <i class="fi fi-rr-check"></i> Save Selected
+                        </button>
+                        <button onclick="saveScores()" class="btn btn-save w-100 p-2">
+                            <i class="fi fi-rr-disk"></i> រក្សាទុក
+                        </button>
+                        <button onclick="window.print()" class="btn btn-primary w-100 p-2 btn-print-pdf">
+                            <i class="fi fi-rr-print"></i> PDF
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive mt-3">
+                    <table class="table table-bordered table-hover score-table" id="studentScoreTable">
+                        <thead id="scoreTableHeader">
+                            <!-- Headers will be dynamic -->
+                        </thead>
+                        <tbody id="studentScoreTableBody">
+                            <!-- Students will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="grading-panel shadow-sm border">
+                            <h6 class="fw-bold text-pink-primary border-bottom pb-2">Grading System</h6>
+                            <div class="row">
+                                <div class="col-6">
+                                    <ul class="list-unstyled mb-0">
+                                        <li><span class="badge bg-success">A+</span> = 96% - 100%</li>
+                                        <li><span class="badge bg-success">A</span> = 90% - 95%</li>
+                                        <li><span class="badge bg-primary">B</span> = 80% - 89%</li>
+                                    </ul>
+                                </div>
+                                <div class="col-6">
+                                    <ul class="list-unstyled mb-0">
+                                        <li><span class="badge bg-info">C</span> = 70% - 79%</li>
+                                        <li><span class="badge bg-warning">D</span> = 50% - 69%</li>
+                                        <li><span class="badge bg-danger">F</span> = Under 50%</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded shadow-sm bg-white h-100">
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">Summary Note:</h6>
+                            <div class="d-flex justify-content-around align-items-center h-75">
+                                <div class="text-center px-3 border-end">
+                                    <span class="d-block text-muted small mb-1">ជាប់ (Passed)</span>
+                                    <span id="totalPassed" class="fs-2 fw-bold text-success">0</span>
+                                </div>
+                                <div class="text-center px-3">
+                                    <span class="d-block text-muted small mb-1">ធ្លាក់ (Failed)</span>
+                                    <span id="totalFailed" class="fs-2 fw-bold text-danger">0</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Print-Only Summary Layout (Matches Mockup) -->
+                <div class="print-summary-section">
+                    <div class="mb-2">
+                        End of list at No. <span id="print-end-no">...</span>: <span id="print-end-name">...</span>
+                    </div>
+                    <div class="mb-3">
+                        Male: <span id="print-male-count">0</span> &nbsp;&nbsp; Female: <span id="print-female-count">0</span>
+                    </div>
+                    <hr style="border-top: 1px solid #ccc; margin: 10px 0;">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="small">
+                                A+ = 96%-100%, A = 90%-95%, B = 80%-89%<br>
+                                C = 70%-79%,&nbsp;&nbsp; D = 50%-69%, F = Under 50%
+                            </div>
+                            <div class="mt-2 fw-bold">
+                                Note: Passed: <span id="print-passed">0</span> &nbsp;&nbsp;&nbsp; Failed: <span id="print-failed">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Footer Section -->
+                <div class="score-footer">
+                    <div class="footer-left">
+                        <!-- Space for left footer if needed -->
+                    </div>
+                    <div class="footer-right">
+                        <div class="fw-bold">ITK, <span id="footerDate">...</span></div>
+                        <div class="fw-bold">Classroom Teacher</div>
+                        <div class="teacher-signature" id="signatureTeacherName" style="border-top: none !important; margin-top: 50px;">
+                            ...
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Honor Roll Section (តារាងកិត្តិយស) -->
+                <div class="honor-roll-section mt-5 pt-4 border-top animate__animated animate__fadeIn" style="display: none;" id="honorRollSection">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h3 class="fw-bold text-pink-primary mb-0">🏆 តារាងកិត្តិយស (Honor Roll)</h3>
+                            <p class="text-muted small mb-0">Monthly Top Performers | Teacher: <span id="honorTeacherName">...</span></p>
+                        </div>
+                        <button onclick="window.print()" class="btn btn-outline-pink-primary btn-sm rounded-pill btn-print-honor">
+                            <i class="fi fi-rr-print me-1"></i> Print Honor Roll
+                        </button>
+                    </div>
+                    <div class="honor-board p-4 rounded-4 shadow-sm bg-white border">
+                        <div class="row g-3 justify-content-center" id="honorRollCards">
+                            <!-- Cards for Rank 1-5 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Score Modal -->
+    <div class="modal fade" id="editScoreModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header bg-pink-primary text-white" style="border-radius: 20px 20px 0 0;">
+                    <h5 class="modal-title"><i class="fi fi-rr-edit me-2"></i> កែសម្រួលពិន្ទុសិស្ស</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="student-info-mini mb-3 p-3 bg-light rounded-3 d-flex align-items-center gap-3">
+                        <div class="bg-white p-2 rounded shadow-sm">
+                            <i class="fi fi-rr-user-md text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h6 class="mb-0 fw-bold" id="modalStudentName">...</h6>
+                            <small class="text-muted" id="modalStudentId">ID: ...</small>
+                        </div>
+                    </div>
+                    <form id="modalScoreForm">
+                        <input type="hidden" id="modalSid">
+                        <div class="row g-3" id="modalScoreInputs">
+                            <!-- Dynamic inputs based on monthly/semester -->
+                        </div>
+
+                        <div class="modal-live-summary mt-4 p-3 rounded-3 border-start border-5 border-info bg-light">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fw-bold text-dark"><i class="fi fi-rr-calculator me-1"></i> លទ្ធផលប៉ាន់ស្មាន (Preview):</span>
+                                <div class="d-flex gap-3 h5 mb-0">
+                                    <span class="badge bg-white text-dark shadow-sm border">សរុប: <span id="modalLiveTotal">0</span></span>
+                                    <span class="badge bg-white text-dark shadow-sm border">និទ្ទេស: <span id="modalLiveGrade">-</span></span>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer border-0 p-3">
+                    <button type="button" class="btn btn-light px-4 rounded-pill" data-bs-dismiss="modal">បិទ</button>
+                    <button type="button" class="btn btn-pink-primary px-4 rounded-pill shadow" onclick="saveModalScores()">រក្សាទុកការកែប្រែ</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .honor-board {
+            background-color: #fffafb;
+            border-color: #ffe4e9 !important;
+        }
+        .honor-card {
+            background: white;
+            border-radius: 18px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 2px solid #f0f0f0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        .honor-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(233, 30, 99, 0.15);
+            border-color: #ff85a2;
+        }
+        
+        .honor-rank-1 { border-color: #ffd700 !important; background: linear-gradient(135deg, #fffdf0, #fff); }
+        .honor-rank-2 { border-color: #c0c0c0 !important; background: linear-gradient(135deg, #f8f8f8, #fff); }
+        .honor-rank-3 { border-color: #cd7f32 !important; background: linear-gradient(135deg, #fdf5f0, #fff); }
+        
+        .rank-badge {
+            width: 45px;
+            height: 45px;
+            line-height: 45px;
+            border-radius: 50%;
+            display: inline-block;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            color: white;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .bg-rank-1 { background: linear-gradient(45deg, #ffd700, #ffec8b); }
+        .bg-rank-2 { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); }
+        .bg-rank-3 { background: linear-gradient(45deg, #cd7f32, #ee9a49); }
+        .bg-rank-other { background: linear-gradient(45deg, #adb5bd, #dee2e6); color: #495057; }
+        
+        .honor-name {
+            font-family: 'Khmer OS Muol Light', serif;
+            font-size: 0.95rem;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        .honor-detail { font-size: 0.75rem; color: #666; }
+        .honor-grade { font-size: 1.1rem; margin-top: 10px; font-weight: bold; }
+
+        @media print {
+            .btn-print-honor, .action-column, .score-header, .grading-panel, .btn-save, #monthSelectContainer {
+                display: none !important;
+            }
+            .honor-roll-section {
+                display: block !important;
+                page-break-before: always;
+                margin-top: 40px !important;
+                border-top: none !important;
+            }
+            .honor-board {
+                border: none !important;
+                background: none !important;
+                padding: 0 !important;
+            }
+            .honor-card {
+                box-shadow: none !important;
+                border: 2px solid #ddd !important;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+
+    <!-- Firebase SDKs (v9 Compat) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+    <!-- UI Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Project Scripts -->
+    <script src="firebase-config.js"></script>
+    <script src="auth-check.js"></script>
+    <script src="loader.js"></script>
+    <script src="sidebar-loader.js"></script>
+    <script src="teacher-scores-script.js"></script>
+
+    <script>
+        // Update footer date and signature dynamically after login
+        document.getElementById('teacherLoginForm').addEventListener('submit', function() {
+            setTimeout(() => {
+                const teacherName = document.getElementById('displayTeacherName').textContent;
+                const dateText = document.getElementById('displayDate').textContent;
+                if (teacherName && dateText) {
+                    const signatureEl = document.getElementById('signatureTeacherName');
+                    const footerDateEl = document.getElementById('footerDate');
+                    if (signatureEl) signatureEl.textContent = teacherName;
+                    if (footerDateEl) footerDateEl.textContent = dateText;
+                }
+            }, 500); // Shorter delay but safer
+        });
+    </script>
+</body>
+
+</html>

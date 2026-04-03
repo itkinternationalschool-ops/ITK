@@ -1,0 +1,691 @@
+/* --- CUSTOM PINK CSS THEME (V5 UI Focused) --- */
+:root {
+    --bs-pink-primary: rgb(31, 6, 55);
+    --bs-pink-dark: rgb(31, 6, 55);
+    --bs-pink-hover: #2a084d;
+    --bs-body-bg: #f8f9fa;
+    /* Light background for the main content */
+    --bs-secondary: #6c757d;
+}
+
+/* -------------------------------------------
+    0. GLOBAL LOADER (PREMIUM FULL SCREEN)
+    ------------------------------------------- */
+/* -------------------------------------------
+    0. GLOBAL LOADER (PREMIUM FULL SCREEN)
+    ------------------------------------------- */
+/* -------------------------------------------
+    0. GLOBAL LOADER (PREMIUM FULL SCREEN)
+    ------------------------------------------- */
+#global-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.85);
+    /* Light translucent background */
+    backdrop-filter: blur(15px);
+    /* Premium blur effect */
+    -webkit-backdrop-filter: blur(15px);
+    z-index: 2147483647;
+    /* Max z-index */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+#global-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-logo-container {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Central Logo */
+.loader-logo {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 50%;
+    z-index: 2;
+    box-shadow: 0 0 30px rgba(31, 6, 55, 0.2);
+    animation: breath 3s ease-in-out infinite;
+}
+
+/* Dynamic Spinner Ring */
+.loader-ring {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-top-color: rgb(31, 6, 55);
+    /* Primary Dark Pink/Purple */
+    border-right-color: #ff69b4;
+    /* Hot Pink */
+    z-index: 1;
+    animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    /* Easing back animation */
+}
+
+/* Secondary Ring for depth */
+.loader-ring::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    border-bottom-color: #ff69b4;
+    border-left-color: rgb(31, 6, 55);
+    animation: spin 2s linear infinite reverse;
+}
+
+/* Loading Text */
+.loader-text {
+    font-family: 'Khmer OS Battambang', sans-serif;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: rgb(31, 6, 55);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    position: relative;
+}
+
+/* Typing/Dot Animation for text */
+.loader-text::after {
+    content: '...';
+    animation: ellipsis 1.5s infinite;
+    display: inline-block;
+    width: 1em;
+    text-align: left;
+}
+
+/* Animations */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes breath {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 30px rgba(31, 6, 55, 0.2);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 0 50px rgba(255, 105, 180, 0.5);
+    }
+}
+
+@keyframes ellipsis {
+    0% {
+        content: '';
+    }
+
+    25% {
+        content: '.';
+    }
+
+    50% {
+        content: '..';
+    }
+
+    75% {
+        content: '...';
+    }
+}
+
+/* -------------------------------------------
+    1. BASE STYLES & LAYOUT
+    ------------------------------------------- */
+* {
+    font-family: 'Khmer OS Battambang', 'Arial', sans-serif !important;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern" 1, "liga" 1;
+}
+
+body {
+    background-color: var(--bs-body-bg);
+    display: flex;
+    min-height: 100vh;
+    margin: 0;
+    /* បន្ថែម overflow-x: hidden ដើម្បីការពារ horizontal scrollbar ដោយ Sidebar */
+    overflow-x: hidden;
+    color: #000000;
+    /* Force black text globally */
+}
+
+/* Force specific text classes to be black or darker if they were gray */
+.text-muted {
+    color: #333333 !important;
+}
+
+.text-secondary {
+    color: #000000 !important;
+}
+
+/* -------------------------------------------
+    2. SIDEBAR STYLES
+    ------------------------------------------- */
+#sidebar {
+    width: 250px;
+    min-width: 250px;
+    background-color: var(--bs-pink-dark);
+    /* ពណ៌ផ្កាឈូកចាស់ */
+    color: white;
+    padding: 0;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    flex-shrink: 0;
+    position: sticky;
+    /* ធ្វើឱ្យ Sidebar ជាប់ពេល Scroll */
+    top: 0;
+    height: 100vh;
+    /* ពេញកម្ពស់អេក្រង់ */
+    z-index: 100;
+    /* Sidebar lower than loader */
+}
+
+.sidebar-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 15px;
+    background-color: var(--bs-pink-primary);
+    font-weight: bold;
+    font-size: 1.1rem;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+}
+
+#sidebar-logo {
+    width: 70px;
+    height: 70px;
+    margin-right: 0;
+    margin-bottom: 10px;
+    object-fit: cover;
+    background-color: white;
+    padding: 4px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Sidebar Navigation Links */
+#sidebar .nav {
+    padding-top: 10px;
+}
+
+#sidebar .nav-link {
+    color: rgba(255, 255, 255, 0.8);
+    /* ពណ៌សស្រាល */
+    padding: 15px 20px;
+    transition: background-color 0.3s, color 0.3s;
+    border-left: 5px solid transparent;
+}
+
+#sidebar .nav-link i {
+    margin-right: 10px;
+}
+
+#sidebar .nav-link:hover {
+    background-color: var(--bs-pink-hover);
+    /* ពណ៌ផ្កាឈូកខ្មៅជាង */
+    color: white;
+    border-left-color: var(--bs-pink-primary);
+}
+
+#sidebar .nav-link.active {
+    background: linear-gradient(90deg, #ff69b4, rgba(255, 105, 180, 0.8)) !important;
+    /* ពណ៌ផ្កាឈូកចម្បងនៅ Active */
+    color: white;
+    font-weight: bold;
+    border-left-color: white;
+}
+
+/* -------------------------------------------
+    3. MAIN CONTENT & CARD STYLES
+    ------------------------------------------- */
+#main-content {
+    flex-grow: 1;
+    padding: 30px;
+    background-color: var(--bs-body-bg);
+    position: relative;
+    z-index: 1;
+    min-width: 0;
+    overflow-x: hidden; 
+    width: 100%;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+/* Pink header for the main card */
+.card-header-pink {
+    background-color: var(--bs-pink-primary);
+    color: white;
+    font-weight: bold;
+    font-size: 1.25rem;
+    padding: 15px 20px;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+}
+
+/* Custom background for modal header */
+.bg-pink-primary {
+    background-color: var(--bs-pink-primary) !important;
+}
+
+/* -------------------------------------------
+    4. DATA TABLE SPECIFIC STYLES
+    ------------------------------------------- */
+.table {
+    white-space: nowrap;
+    /* ការពារមិនឱ្យអក្សរបាក់ជួរ */
+    table-layout: auto;
+}
+
+.table thead th {
+    background-color: var(--bs-pink-primary);
+    color: white;
+    font-weight: bold;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    vertical-align: middle;
+    padding: 0.5rem 0.5rem;
+}
+
+.table.small {
+    font-size: 0.8rem;
+    /* ធ្វើឱ្យអក្សរតូចជាងមុនបន្តិច ដើម្បីមើលឃើញជួរឈរច្រើន */
+}
+
+.table.small td {
+    vertical-align: middle;
+}
+
+/* ធ្វើឱ្យជួរឈរសកម្មភាពតូចល្មម */
+.table.small td:last-child {
+    width: 1%;
+}
+
+/* Style សម្រាប់ប៊ូតុងនៅក្នុងតារាង */
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+}
+
+/* --- MODERN UTILITIES --- */
+/* --- MODERN UTILITIES --- */
+.bg-pink-primary {
+    background-color: var(--bs-pink-primary) !important;
+}
+
+.text-pink-primary {
+    color: var(--bs-pink-primary) !important;
+}
+
+.hover-up {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-up:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.shadow-inner {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06) !important;
+}
+
+.min-vh-10 {
+    min-height: 10vh;
+}
+
+.font-khmer {
+    font-family: 'Khmer OS Battambang', sans-serif !important;
+}
+
+/* Custom scrollbar for better look */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--bs-pink-primary);
+}
+
+/* -------------------------------------------
+    5. RESPONSIVE MOBILE UI (100% CORRECT)
+    ------------------------------------------- */
+
+/* Mobile Top Bar (Hidden by default on Desktop) */
+#mobile-top-bar {
+    display: none;
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--bs-pink-dark);
+    color: white;
+    z-index: 1050;
+    align-items: center;
+    padding: 0 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mobile-toggle-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.mobile-toggle-btn:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-brand {
+    margin-left: 15px;
+    font-weight: bold;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+}
+
+/* Sidebar Overlay */
+#sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
+
+/* Tablet Breakpoint (768px - 991px) */
+@media (max-width: 991.98px) and (min-width: 768px) {
+    body {
+        flex-direction: column !important;
+    }
+
+    #mobile-top-bar {
+        display: flex !important;
+    }
+
+    #sidebar {
+        position: fixed !important;
+        left: -280px !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 280px !important;
+        min-width: 280px !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 2000 !important;
+        height: 100vh !important;
+    }
+
+    #sidebar.show {
+        left: 0 !important;
+    }
+
+    #main-content {
+        padding: 20px !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        flex-grow: 1 !important;
+    }
+
+    #sidebar.show+#sidebar-overlay {
+        display: block !important;
+    }
+
+    .table-responsive {
+        border-radius: 12px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        margin-bottom: 20px !important;
+    }
+
+    .card-body {
+        padding: 20px !important;
+    }
+}
+
+/* Mobile Breakpoint (up to 767px) */
+@media (max-width: 767.98px) {
+    body {
+        flex-direction: column !important;
+    }
+
+    #mobile-top-bar {
+        display: flex !important;
+        height: 56px;
+    }
+
+    #sidebar {
+        position: fixed !important;
+        left: -260px !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        width: 260px !important;
+        min-width: 260px !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        z-index: 2000 !important;
+        height: 100vh !important;
+    }
+
+    #sidebar.show {
+        left: 0 !important;
+    }
+
+    #main-content {
+        padding: 12px !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+        flex-grow: 1 !important;
+    }
+
+    #sidebar.show+#sidebar-overlay {
+        display: block !important;
+    }
+
+    /* Responsive Table Wrapper */
+    .table-responsive {
+        border-radius: 8px !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        margin-bottom: 15px !important;
+    }
+
+    /* Compact spacing for mobile */
+    .row>* {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .card {
+        margin-bottom: 15px !important;
+    }
+
+    .card-body {
+        padding: 12px !important;
+    }
+
+    .card-header-pink {
+        padding: 12px 15px !important;
+        font-size: 1rem !important;
+    }
+
+    h1 {
+        font-size: 1.5rem !important;
+    }
+
+    h2 {
+        font-size: 1.3rem !important;
+    }
+
+    h3 {
+        font-size: 1.2rem !important;
+    }
+
+    h4 {
+        font-size: 1.1rem !important;
+    }
+
+    h5 {
+        font-size: 1rem !important;
+    }
+
+    /* Button adjustments */
+    .btn {
+        padding: 8px 16px !important;
+        font-size: 0.9rem !important;
+    }
+
+    .btn-sm {
+        padding: 4px 8px !important;
+        font-size: 0.8rem !important;
+    }
+
+    /* Form controls */
+    .form-control,
+    .form-select {
+        font-size: 0.9rem !important;
+        padding: 8px 12px !important;
+    }
+
+    /* Modal adjustments */
+    .modal-dialog {
+        margin: 10px !important;
+    }
+
+    .modal-body {
+        padding: 15px !important;
+    }
+
+    /* Sidebar adjustments for mobile */
+    #sidebar .nav-link {
+        padding: 10px 15px !important;
+        font-size: 0.95rem !important;
+    }
+
+    #sidebar-logo {
+        width: 60px !important;
+        height: 60px !important;
+    }
+
+    .sidebar-header {
+        padding: 15px 10px !important;
+        font-size: 1rem !important;
+    }
+}
+
+/* Extra small devices (phones in portrait, less than 576px) */
+@media (max-width: 575.98px) {
+    #main-content {
+        padding: 10px !important;
+    }
+
+    .card-body {
+        padding: 10px !important;
+    }
+
+    .table {
+        font-size: 0.75rem !important;
+    }
+
+    .table thead th,
+    .table tbody td {
+        padding: 6px 8px !important;
+    }
+
+    /* Stack buttons vertically on very small screens */
+    .btn-group-vertical {
+        width: 100%;
+    }
+
+    .btn-group-vertical .btn {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 500px) and (orientation: landscape) {
+    #sidebar {
+        overflow-y: auto !important;
+    }
+
+    .sidebar-header {
+        padding: 10px !important;
+    }
+
+    #sidebar-logo {
+        width: 50px !important;
+        height: 50px !important;
+    }
+}
+
+.btn-pink-primary {
+    background-color: var(--bs-pink-primary);
+    color: white;
+}
+
+.btn-pink-primary:hover {
+    background-color: var(--bs-pink-hover);
+    color: white;
+}
