@@ -14,29 +14,29 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <style>
         /* --- FONTS --- */
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
         }
 
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
             font-display: swap;
         }
 
         * {
-            font-family: 'Khmer OS Battambang', 'Arial', sans-serif !important;
+            font-family: 'Kantumruy-Light', 'Arial', sans-serif !important;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -211,6 +211,9 @@
             color: var(--bs-pink-dark);
         }
     </style>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </head>
 
 <body class="bg-light">
@@ -760,12 +763,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <!-- Config & Scripts -->
-    <script src="firebase-config.js"></script>
-    <script src="auth-check.js"></script>
-    <script src="user-management.js"></script>
-    <script src="loader.js"></script>
-    <script src="sidebar-loader.js"></script>
-    <script src="sidebar-mobile.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/r2-config.js"></script>
+    <script src="js/r2-uploader.js"></script>
+    <script src="js/auth-check.js"></script>
+    <script src="js/user-management.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/sidebar-loader.js"></script>
 </body>
 
 </html>

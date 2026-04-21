@@ -21,6 +21,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const cancelEditBtn = document.getElementById('cancelEditBtn');
     const displayId = document.getElementById('reg_displayId');
     const formTitle = document.getElementById('formTitle');
+    const photoInput = document.getElementById('reg_photoInput');
+    const photoHidden = document.getElementById('reg_studentPhoto');
+    const studentImage = document.getElementById('studentImage');
+    const placeholderIcon = document.getElementById('placeholderIcon');
+    const uploadStatus = document.getElementById('uploadStatus');
 
     let isEditMode = false;
     let currentStudentKey = null;
@@ -113,7 +118,58 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
+        // Photo Upload Handling
+        if (photoInput) {
+            photoInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // 1. Preview locally
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    if (studentImage) {
+                        studentImage.src = event.target.result;
+                        studentImage.style.display = 'block';
+                    }
+                    if (placeholderIcon) placeholderIcon.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+
+                // 2. Upload to Cloudflare (Simulated/Placeholder)
+                try {
+                    if (uploadStatus) {
+                        uploadStatus.textContent = "កំពុងបញ្ជូនរូបភាព...";
+                        uploadStatus.className = "small mt-1 text-primary";
+                    }
+                    
+                    // 2. Compress Image (Limit to 600px for student photos)
+                    const compressedFile = await window.compressImage(file, 600, 0.8);
+                    
+                    const name = document.getElementById('reg_fullNameKhmer') ? document.getElementById('reg_fullNameKhmer').value.trim() : '';
+                    const prefix = name ? `Reg_${name}` : `Reg`;
+                    const imageUrl = await uploadToCloudflare(compressedFile, prefix);
+                    
+                    if (imageUrl && photoHidden) {
+                        photoHidden.value = imageUrl;
+                        if (uploadStatus) {
+                            uploadStatus.textContent = "បញ្ជូនរូបភាពជោគជ័យ!";
+                            uploadStatus.className = "small mt-1 text-success";
+                        }
+                    }
+                } catch (error) {
+                    console.error("Upload failed:", error);
+                    if (uploadStatus) {
+                        uploadStatus.textContent = "បញ្ជូនរូបភាពមិនជោគជ័យ!";
+                        uploadStatus.className = "small mt-1 text-danger";
+                    }
+                }
+            });
+        }
     }
+
+    // --- Cloudflare Upload Integration (Moved to r2-uploader.js) ---
+
 
     function validateForm() {
         const fullKhmer = document.getElementById('reg_fullNameKhmer').value.trim();
@@ -304,6 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
             dob: getValue('reg_dob'),
             address: getValue('reg_studentAddress'),
             generation: getValue('reg_generation'),
+            studentPhoto: getValue('reg_studentPhoto'),
 
             // Guardian
             fatherName: getValue('reg_fatherName'),
@@ -317,6 +374,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Study
             studyLevel: getValue('reg_studyLevel'),
+            classRoom: getValue('reg_classRoom'),
             subject: getValue('reg_subject'),
             studyTime: getValue('reg_studyTime') === 'custom' ? getValue('reg_customStudyTime') : getValue('reg_studyTime'),
             teacherName: getValue('reg_teacherName'),
@@ -427,6 +485,19 @@ document.addEventListener('DOMContentLoaded', function () {
             setDateValue('reg_dob', d.dob);
             setValue('reg_studentAddress', d.address || d.studentAddress);
             setValue('reg_generation', d.generation);
+            
+            // Set Photo
+            if (d.studentPhoto) {
+                photoHidden.value = d.studentPhoto;
+                studentImage.src = d.studentPhoto;
+                studentImage.style.display = 'block';
+                placeholderIcon.style.display = 'none';
+            } else {
+                photoHidden.value = '';
+                studentImage.src = '';
+                studentImage.style.display = 'none';
+                placeholderIcon.style.display = 'block';
+            }
 
             setValue('reg_fatherName', d.fatherName);
             setValue('reg_fatherJob', d.fatherJob);
@@ -438,6 +509,7 @@ document.addEventListener('DOMContentLoaded', function () {
             setValue('reg_motherAddress', d.motherAddress);
 
             setValue('reg_studyLevel', d.studyLevel);
+            setValue('reg_classRoom', d.classRoom);
             setValue('reg_subject', d.subject);
             setValue('reg_studyTime', d.studyTime);
             setValue('reg_teacherName', d.teacherName);
@@ -526,9 +598,18 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset Pricing
         updatePricing();
         calculateTotal();
+        setValue('reg_classRoom', '');
 
         isEditMode = false;
         currentStudentKey = null;
+
+        // Reset Photo
+        studentImage.src = '';
+        studentImage.style.display = 'none';
+        placeholderIcon.style.display = 'block';
+        photoHidden.value = '';
+        uploadStatus.textContent = '';
+        if (photoInput) photoInput.value = '';
     }
 
     // --- Logic for Custom Study Time ---

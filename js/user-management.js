@@ -100,7 +100,19 @@ function loadUsers() {
             const tr = document.createElement('tr');
             tr.innerHTML = `
                 <td class="ps-4">
-                    <div class="fw-bold text-dark">${displayName}</div>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-3">
+                            <div class="rounded-circle border overflow-hidden bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 38px; height: 38px;">
+                                ${user.avatar ? 
+                                    `<img src="${user.avatar}" class="w-100 h-100 object-fit-cover">` : 
+                                    `<i class="fi fi-rr-user text-secondary" style="font-size: 1.2rem;"></i>`}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark">${displayName}</div>
+                            <div class="small text-muted" style="font-size: 0.75rem;">${isTargetAdmin ? 'System Admin' : 'School Staff'}</div>
+                        </div>
+                    </div>
                 </td>
                 <td class="text-primary">${user.email}</td>
                 <td><span class="badge ${roleBadgeClass} text-uppercase">${userRole}</span></td>

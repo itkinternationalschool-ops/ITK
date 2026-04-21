@@ -1,4 +1,4 @@
-// Firebase References
+﻿// Firebase References
 const transactionsRef = firebase.database().ref('transactions');
 const studentsRef = firebase.database().ref('students');
 const salesRef = firebase.database().ref('sales'); // Inventory Sales
@@ -1124,8 +1124,8 @@ function generateStudentStatusReport(selectedCategory = 'all') {
         <meta charset="UTF-8">
         <title>របាយការណ៍ស្ថានភាពការបង់ប្រាក់សិស្ស - ITK SCHOOL</title>
         <style>
-             @font-face { font-family: 'Khmer OS Battambang'; src: url('fonts/KhmerOSBattambang.ttf') format('truetype'); }
-             body { font-family: 'Khmer OS Battambang', sans-serif; padding: 40px; color: #1a1a1a; background: #fff; line-height: 1.5; }
+             @font-face { font-family: 'Kantumruy-Light'; src: url('fonts/Kantumruy-Light.ttf') format('truetype'); }
+             body { font-family: 'Kantumruy-Light', sans-serif; padding: 40px; color: #1a1a1a; background: #fff; line-height: 1.5; }
              
              /* Modern Header */
              .report-header {
@@ -1599,8 +1599,8 @@ function exportReport(type, startDate, endDate) {
          <base href="${baseUrl}">
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <style>
-             @font-face { font-family: 'Khmer OS Battambang'; src: url('fonts/KhmerOSBattambang.woff2') format('woff2'); }
-             body { font-family: 'Khmer OS Battambang', sans-serif !important; padding: 20px; color: #333; }
+             @font-face { font-family: 'Kantumruy-Light'; src: url('fonts/Kantumruy-Light.ttf') format('truetype'); }
+             body { font-family: 'Kantumruy-Light', sans-serif !important; padding: 20px; color: #333; }
              @page { size: A4 landscape; margin: 15mm; }
              .header-container { display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid rgb(31, 6, 55); padding-bottom: 15px; margin-bottom: 20px; }
              .header-logo img { height: 90px; }

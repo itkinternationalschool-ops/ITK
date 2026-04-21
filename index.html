@@ -11,31 +11,34 @@
         as="style">
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 
-    <!-- Khmer OS Battambang Font -->
+    <!-- Kantumruy-Light Font -->
     <style>
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
         }
 
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
             font-display: swap;
         }
 
         * {
-            font-family: 'Khmer OS Battambang', sans-serif !important;
+            font-family: 'Kantumruy-Light', sans-serif !important;
             font-feature-settings: "kern" 1, "liga" 1;
             -webkit-font-smoothing: antialiased;
         }
     </style>
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 
     <style>
         /* --- ENHANCED NOTIFICATION POPOVER STYLES --- */
@@ -44,7 +47,7 @@
             border: 2px solid #ff69b4 !important;
             border-radius: 15px !important;
             box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2) !important;
-            font-family: 'Khmer OS Battambang', 'Arial', sans-serif;
+            font-family: 'Kantumruy-Light', 'Arial', sans-serif;
         }
 
         .notification-popover .popover-header {
@@ -100,7 +103,7 @@
             transition: all 0.3s;
             flex: 1;
             text-align: center;
-            font-family: 'Khmer OS Battambang', 'Arial', sans-serif;
+            font-family: 'Kantumruy-Light', 'Arial', sans-serif;
         }
 
         .notification-tab:hover {
@@ -621,7 +624,7 @@
         }
 
         * {
-            font-family: 'Khmer OS Battambang', 'Arial', sans-serif !important;
+            font-family: 'Kantumruy-Light', 'Arial', sans-serif !important;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -710,7 +713,7 @@
             animation: shake 0.5s ease-in-out;
         }
     </style>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -952,14 +955,13 @@
 
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="auth-check.js"></script>
-
-    <script src="khmer-font.js"></script>
-    <script src="dashboard-stats.js"></script>
-    <script src="loader.js"></script>
-    <script src="sidebar-loader.js"></script>
-    <script src="sidebar-mobile.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/r2-config.js"></script>
+    <script src="js/r2-uploader.js"></script>
+    <script src="js/auth-check.js"></script>
+    <script src="js/dashboard-stats.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/sidebar-loader.js"></script>
 </body>
 
 </html>

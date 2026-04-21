@@ -16,7 +16,7 @@
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
 
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
 
     <!-- DataTables CSS -->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/2.0.7/css/dataTables.dataTables.min.css" />
@@ -25,20 +25,20 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
-    <!-- Load Khmer OS Battambang font -->
+    <!-- Load Kantumruy-Light font -->
     <style>
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
             font-display: swap;
         }
 
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
             font-display: swap;
@@ -1058,20 +1058,23 @@
     <!-- Firebase Configuration -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="auth-check.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/r2-config.js"></script>
+    <script src="js/r2-uploader.js"></script>
+    <script src="js/auth-check.js"></script>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Bootstrap Bundle with Popper -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Local Script -->
-    <script src="khmer-font.js"></script>
     <script>window.SHOW_DROPOUTS = true;</script>
-    <script src="data-tracking-script.js"></script>
+    <script src="js/data-tracking-script.js"></script>
 
-    <script src="loader.js"></script>
-    <script src="sidebar-loader.js"></script>
-    <script src="sidebar-mobile.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/sidebar-loader.js"></script>
 </body>
 
 </html>

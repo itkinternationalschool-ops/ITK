@@ -75,6 +75,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = document.getElementById('user-display-name');
                 const emailEl = document.getElementById('user-display-email');
                 const roleEl = document.getElementById('user-role-badge');
+                
+                // Avatar Elements
+                const avatarImg = document.getElementById('user-avatar-img');
+                const avatarPlaceholder = document.getElementById('user-avatar-placeholder');
+                const avatarContainer = document.getElementById('user-avatar-container');
+                const avatarInput = document.getElementById('user-avatar-input');
+                const avatarOverlay = document.getElementById('avatar-upload-overlay');
 
                 const displayName = userData && userData.name ? userData.name : user.email.split('@')[0];
 
@@ -82,6 +89,77 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (emailEl) {
                     emailEl.textContent = user.email;
                     emailEl.title = user.email;
+                }
+
+                // Update Avatar
+                if (userData && userData.avatar) {
+                    if (avatarImg) {
+                        avatarImg.src = userData.avatar;
+                        avatarImg.style.display = 'block';
+                    }
+                    if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+                }
+
+                // Setup Avatar Upload
+                if (avatarContainer && avatarInput && !avatarContainer.dataset.listenerSet) {
+                    avatarContainer.addEventListener('mouseover', () => {
+                        if (avatarOverlay) avatarOverlay.style.display = 'flex';
+                    });
+                    avatarContainer.addEventListener('mouseout', () => {
+                        if (avatarOverlay) avatarOverlay.style.display = 'none';
+                    });
+                    avatarContainer.addEventListener('click', () => avatarInput.click());
+                    
+                    avatarInput.addEventListener('change', async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+
+                        try {
+                            // Show loading state
+                            if (avatarPlaceholder) avatarPlaceholder.className = 'fi fi-rr-refresh fa-spin text-primary fa-2x';
+                            
+                            // 1. Compress Image (Limit to 400px for small avatars)
+                            const compressedFile = await window.compressImage(file, 400, 0.7);
+                            
+                            // 2. Upload to Cloudflare
+                            const prefix = `User_${user.email.split('@')[0]}`;
+                            const avatarUrl = await window.uploadToCloudflare(compressedFile, prefix);
+                            
+                            if (avatarUrl) {
+                                // Delete old avatar from Cloudflare if it exists
+                                const oldAvatar = userData ? userData.avatar : null;
+                                if (oldAvatar && window.deleteFromCloudflare && oldAvatar !== avatarUrl) {
+                                    window.deleteFromCloudflare(oldAvatar).catch(e => console.error("Failed to delete old avatar", e));
+                                }
+
+                                // Update Database
+                                await firebase.database().ref('users/' + user.uid).update({ avatar: avatarUrl });
+                                
+                                // Update UI
+                                if (avatarImg) {
+                                    avatarImg.src = avatarUrl;
+                                    avatarImg.style.display = 'block';
+                                }
+                                if (avatarPlaceholder) avatarPlaceholder.style.display = 'none';
+                                
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'អាប់ដេតជោគជ័យ',
+                                    text: 'រូបភាព Profile ត្រូវបានផ្លាស់ប្តូរ!',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            }
+                        } catch (err) {
+                            console.error("Avatar upload failed:", err);
+                            Swal.fire('Error', 'បញ្ជូនរូបភាពមិនជោគជ័យ: ' + err.message, 'error');
+                        } finally {
+                            if (avatarPlaceholder && (!userData || !userData.avatar)) {
+                                avatarPlaceholder.className = 'fi fi-rr-user-circle text-primary fa-2x';
+                            }
+                        }
+                    });
+                    avatarContainer.dataset.listenerSet = "true";
                 }
 
                 // Update Role Badge dynamically

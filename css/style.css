@@ -1,3 +1,10 @@
+﻿@font-face {
+    font-family: 'Kantumruy-Light';
+    src: url('../fonts/Kantumruy-Light.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 /* --- CUSTOM PINK CSS THEME (V5 UI Focused) --- */
 :root {
     --bs-pink-primary: rgb(31, 6, 55);
@@ -97,7 +104,7 @@
 
 /* Loading Text */
 .loader-text {
-    font-family: 'Khmer OS Battambang', sans-serif;
+    font-family: 'Kantumruy-Light', sans-serif;
     font-size: 1.5rem;
     font-weight: bold;
     color: rgb(31, 6, 55);
@@ -162,7 +169,7 @@
     1. BASE STYLES & LAYOUT
     ------------------------------------------- */
 * {
-    font-family: 'Khmer OS Battambang', 'Arial', sans-serif !important;
+    font-family: 'Kantumruy-Light', 'Arial', sans-serif !important;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -371,7 +378,7 @@ body {
 }
 
 .font-khmer {
-    font-family: 'Khmer OS Battambang', sans-serif !important;
+    font-family: 'Kantumruy-Light', sans-serif !important;
 }
 
 /* Custom scrollbar for better look */
@@ -683,6 +690,52 @@ body {
 .btn-pink-primary {
     background-color: var(--bs-pink-primary);
     color: white;
+}
+
+/* Student Photo Upload Styles */
+.student-photo-container .photo-preview-wrapper {
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: #f8f9fa;
+    border-radius: 50%;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.student-photo-container .photo-preview-wrapper:hover {
+    border-color: #ff69b4 !important;
+    transform: scale(1.02);
+}
+
+.student-photo-container .photo-edit-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.student-photo-container .photo-preview-wrapper:hover .photo-edit-overlay {
+    opacity: 1;
+}
+
+.student-photo-container .photo-edit-overlay i {
+    font-size: 1.5rem;
+    color: white;
+    transform: translateY(10px);
+    transition: transform 0.3s ease !important;
+}
+
+.student-photo-container .photo-preview-wrapper:hover .photo-edit-overlay i {
+    transform: translateY(0);
 }
 
 .btn-pink-primary:hover {

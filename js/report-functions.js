@@ -1,12 +1,12 @@
-
+﻿
 // ============================================
 // SHARED STYLES & HEADER
 // ============================================
 
 const REPORT_STYLES = `
     @font-face {
-        font-family: 'Khmer OS Battambang';
-        src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+        font-family: 'Kantumruy-Light';
+        src: url('fonts/Kantumruy-Light.ttf') format('truetype');
     }
     :root {
         --primary-color: rgb(31, 6, 55);
@@ -14,7 +14,7 @@ const REPORT_STYLES = `
         --border-color: #dee2e6;
     }
     body {
-        font-family: 'Khmer OS Battambang', sans-serif;
+        font-family: 'Kantumruy-Light', sans-serif;
         font-size: 12px;
         color: #333;
         line-height: 1.5;
@@ -53,7 +53,7 @@ const REPORT_STYLES = `
         font-weight: bold;
         color: var(--primary-color);
         margin: 0;
-        font-family: 'Khmer OS Muol Light', 'Khmer OS Battambang';
+        font-family: 'Khmer OS Muol Light', 'Kantumruy-Light';
     }
     .school-name-en {
         font-size: 16px;

@@ -1,4 +1,4 @@
-
+﻿
 // ==========================================
 // INVENTORY MANAGEMENT SCRIPT
 // ==========================================
@@ -887,11 +887,11 @@ async function exportToPDF() {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <style>
              @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                     url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                     url('fonts/Kantumruy-Light.ttf') format('truetype');
             }
-            body { font-family: 'Khmer OS Battambang', sans-serif; padding: 40px; color: #333; line-height: 1.6; }
+            body { font-family: 'Kantumruy-Light', sans-serif; padding: 40px; color: #333; line-height: 1.6; }
             .header-layout { display: flex; align-items: center; justify-content: center; margin-bottom: 30px; border-bottom: 2px solid #e91e63; padding-bottom: 20px; }
             .logo { width: 120px; height: 120px; object-fit: contain; margin-right: 30px; }
             .school-info { text-align: center; }

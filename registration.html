@@ -13,22 +13,22 @@
     <script src="global-settings.js" defer></script>
     <style>
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: bold;
             font-style: normal;
         }
 
         * {
-            font-family: 'Khmer OS Battambang', sans-serif !important;
+            font-family: 'Kantumruy-Light', sans-serif !important;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -41,8 +41,8 @@
     <!-- Animate.css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="registration-style.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/registration-style.css">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -142,9 +142,26 @@
 
                     <!-- Personal Information -->
                     <div class="registration-card p-4 animate__animated animate__fadeInUp animate__delay-1s">
-                        <div class="section-title">
-                            <i class="fi fi-rr-id-card me-2 text-primary"></i> ព័ត៌មានផ្ទាល់ខ្លួន (Personal
-                            Information)
+                        <div class="section-title d-flex justify-content-between align-items-center">
+                            <span><i class="fi fi-rr-id-card me-2 text-primary"></i> ព័ត៌មានផ្ទាល់ខ្លួន (Personal Information)</span>
+                        </div>
+                        
+                        <!-- Student Photo Upload -->
+                        <div class="row mb-4 justify-content-center">
+                            <div class="col-md-12 text-center">
+                                <div class="student-photo-wrapper mx-auto">
+                                    <div class="photo-preview-container" id="photoPreview">
+                                        <i class="fi fi-rr-user" id="placeholderIcon"></i>
+                                        <img id="studentImage" src="" alt="Student Photo" style="display: none;">
+                                    </div>
+                                    <button type="button" class="btn btn-outline-primary btn-sm mt-2 rounded-pill" onclick="document.getElementById('reg_photoInput').click()">
+                                        <i class="fi fi-rr-camera me-1"></i> ប្តូររូបថត
+                                    </button>
+                                    <input type="file" id="reg_photoInput" accept="image/*" style="display: none;">
+                                    <input type="hidden" id="reg_studentPhoto" name="studentPhoto">
+                                    <div id="uploadStatus" class="small mt-1 text-muted"></div>
+                                </div>
+                            </div>
                         </div>
                         <div class="row g-3">
                             <div class="col-md-3">
@@ -222,6 +239,13 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fi fi-rr-layers text-success"></i></span>
                                     <input type="text" class="form-control" id="reg_studyLevel">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label fw-bold">ថ្នាក់រៀន (Class Room)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fi fi-rr-school text-success"></i></span>
+                                    <input type="text" class="form-control" id="reg_classRoom" placeholder="ឧៈ 7A, 8B...">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -643,13 +667,13 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
 
     <!-- App Scripts -->
-    <script src="firebase-config.js"></script>
-    <script src="auth-check.js"></script>
-    <script src="khmer-font.js"></script>
-    <script src="registration-script.js"></script>
-    <script src="loader.js"></script>
-    <script src="sidebar-loader.js"></script>
-    <script src="sidebar-mobile.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/r2-config.js"></script>
+    <script src="js/r2-uploader.js"></script>
+    <script src="js/auth-check.js"></script>
+    <script src="js/registration-script.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/sidebar-loader.js"></script>
 </body>
 
 </html>

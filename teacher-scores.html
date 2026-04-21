@@ -11,7 +11,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/style.css">
     
     <!-- Icons -->
     <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/uicons-regular-rounded/css/uicons-regular-rounded.css'>
@@ -24,13 +24,13 @@
 
     <style>
         @font-face {
-            font-family: 'Khmer OS Battambang';
-            src: url('fonts/KhmerOSBattambang.woff2') format('woff2');
+            font-family: 'Kantumruy-Light';
+            src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             font-weight: normal;
         }
 
         body {
-            font-family: 'Khmer OS Battambang', sans-serif !important;
+            font-family: 'Kantumruy-Light', sans-serif !important;
             background-color: #f0f2f5;
         }
 
@@ -62,6 +62,14 @@
             box-shadow: 0 5px 25px rgba(0,0,0,0.05);
             padding: 30px;
             margin-top: 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .score-container-wide {
+            max-width: 100% !important;
         }
 
         .teacher-info-banner {
@@ -183,9 +191,9 @@
                 background-color: white !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
-                font-family: 'Times New Roman', 'Khmer OS Battambang', serif !important;
+                font-family: 'Times New Roman', 'Kantumruy-Light', serif !important;
             }
-            #sidebar, #mobile-top-bar, #login-section, .score-header, .grading-panel, .teacher-info-banner, .summary-box, .btn-save, #monthSelectContainer, .btn-print-pdf, .p-3.border.rounded.shadow-sm.bg-white, .action-column {
+            #sidebar, #mobile-top-bar, #login-section, .score-header, .grading-panel, .teacher-info-banner, .summary-box, .btn-save, #monthSelectContainer, .btn-print-pdf, .p-3.border.rounded.shadow-sm.bg-white, .action-column, .btn-print-honor, #honor-roll-view-section .mb-3 {
                 display: none !important;
             }
             /* Hide empty rows during print */
@@ -206,9 +214,11 @@
             }
             @page {
                 size: A4 portrait;
-                margin: 0.5cm;
+                margin: 0;
             }
-            .table {
+            
+            /* Standard Score Table Print */
+            body:not(.printing-honor-roll) .table {
                 width: 100% !important;
                 border-collapse: collapse !important;
                 font-size: 0.72rem !important;
@@ -222,6 +232,235 @@
                 height: 28px;
                 vertical-align: middle !important;
             }
+
+            /* Honor Roll Print - A4 Portrait */
+            body.printing-honor-roll #print-header, body.printing-honor-roll .print-summary-section, body.printing-honor-roll .score-footer {
+                display: none !important;
+            }
+
+            body.printing-honor-roll .honor-roll-section {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 210mm;
+                height: 297mm;
+                padding: 15mm !important;
+                background: white !important;
+                z-index: 9999;
+                margin: 0 !important;
+                border: 15px double #1f0637; /* Professional border for certificate */
+                box-sizing: border-box;
+            }
+
+            body.printing-honor-roll .honor-board {
+                background: none !important;
+                border: none !important;
+                padding: 0 !important;
+                box-shadow: none !important;
+            }
+
+            /* Certificate Print - A4 Landscape */
+            body.printing-certificate .certificate-paper {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 297mm;
+                height: 210mm;
+                padding: 10mm !important;
+                background: white !important;
+                z-index: 9999;
+            }
+
+            @page certificate-page {
+                size: A4 landscape;
+                margin: 0;
+            }
+            body.printing-certificate {
+                page: certificate-report !important; /* Force landscape via CSS if printer supports */
+            }
+            body.printing-certificate #sidebar, 
+            body.printing-certificate #mobile-top-bar, 
+            body.printing-certificate #main-content {
+                display: none !important;
+            }
+        }
+
+        /* Certificate Styling - Based on provided image */
+        .certificate-paper {
+            display: none;
+            width: 297mm;
+            height: 210mm;
+            margin: auto;
+            background: white;
+            position: relative;
+            box-sizing: border-box;
+            font-family: 'Kantumruy-Light', sans-serif;
+            overflow: hidden;
+            color: #1a1a1a;
+        }
+
+        .cert-outer-border {
+            border: 20px solid #2e3192;
+            height: 100%;
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .cert-inner-border {
+            border: 5px double #2e3192;
+            height: 100%;
+            width: 100%;
+            padding: 40px 60px;
+            box-sizing: border-box;
+            background-image: url('img/logo.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 350px;
+            background-color: rgba(255, 255, 255, 0.95);
+            background-blend-mode: overlay;
+        }
+
+        .cert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .cert-moeys-logo {
+            width: 90px;
+            margin-bottom: 15px;
+        }
+
+        .cert-dept {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        .cert-header-right {
+            text-align: center;
+            width: 350px;
+        }
+
+        .cert-country {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .cert-motto {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.1rem;
+        }
+
+        .cert-title-container {
+            text-align: center;
+            margin: 25px 0;
+        }
+
+        .cert-main-title {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 4.2rem;
+            color: #ed1c24;
+            margin: 0;
+            letter-spacing: 2px;
+        }
+
+        .cert-subtitle {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.8rem;
+            margin-top: 15px;
+        }
+
+        .cert-body-text {
+            font-size: 1.5rem;
+            line-height: 2.2;
+            text-align: justify;
+            margin: 30px 40px;
+            padding: 0 40px;
+        }
+
+        .highlight-red {
+            color: #ed1c24;
+            font-weight: bold;
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.6rem;
+        }
+
+        .cert-footer-layout {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding: 0 40px;
+        }
+
+        .footer-sign-box {
+            text-align: center;
+            width: 300px;
+        }
+
+        .footer-date {
+            margin-bottom: 60px;
+            font-size: 1.1rem;
+        }
+
+        .muol {
+            font-family: 'Khmer OS Muol Light';
+        }
+
+        .mt-4.fw-bold.displayTeacherName {
+            font-family: 'Khmer OS Muol Light';
+            font-size: 1.2rem;
+        }
+
+        /* UI Preview Specific Styling (Scales the certificate to fit screen) */
+        .certificate-paper-preview {
+            width: 297mm;
+            height: 210mm;
+            background: white;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+            transform-origin: top left;
+            position: relative;
+            transform: scale(0.6); /* Default scale */
+        }
+
+        .cert-preview-wrapper {
+            width: 180mm; /* 297 * 0.6 approx */
+            height: 130mm; /* 210 * 0.6 approx */
+            display: flex;
+            justify-content: center;
+        }
+        
+        @media (max-width: 1600px) {
+            .certificate-paper-preview { transform: scale(0.5); }
+            .cert-preview-wrapper { width: 150mm; height: 110mm; }
+        }
+        
+        @media (max-width: 1200px) {
+            .certificate-paper-preview { transform: scale(0.4); }
+            .cert-preview-wrapper { width: 120mm; height: 90mm; }
+        }
+
+        .bg-soft-primary { background-color: #e0e7ff; }
+        .rounded-4 { border-radius: 1.2rem !important; }
+        .btn-xs { padding: 0.25rem 0.5rem; font-size: 0.75rem; border-radius: 10px; }
+
+            body.printing-honor-roll .honor-card {
+                box-shadow: none !important;
+                border: 2px solid #ddd !important;
+                background-color: #fff !important;
+            }
+
+            body.printing-honor-roll .honor-rank-1 { border-color: #ffd700 !important; border-width: 3px !important; }
+            body.printing-honor-roll .honor-rank-2 { border-color: #c0c0c0 !important; }
+            body.printing-honor-roll .honor-rank-3 { border-color: #cd7f32 !important; }
+
             .table th {
                 background-color: #f2f2f2 !important; /* Professional light gray header */
                 color: black !important;
@@ -299,6 +538,560 @@
         .khmer-number { font-size: 2rem; margin-top: 5px; font-family: 'Khmer OS Muol Light'; }
         .header-content { text-align: center; border-top: 1px solid #000; margin-top: 5px; padding-top: 5px; }
         .program-title { font-size: 1.3rem; font-weight: bold; text-decoration: underline; margin-bottom: 5px; }
+
+        /* Dashboard Styling */
+        .dashboard-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid #f0f0f0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-color: #1f0637;
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2.5rem;
+        }
+
+        .bg-soft-primary { background: #eef2ff; color: #4338ca; }
+        .bg-soft-success { background: #f0fdf4; color: #15803d; }
+        .bg-soft-warning { background: #fffbeb; color: #b45309; }
+
+        .dashboard-card h4 {
+            font-weight: bold;
+            color: #1f0637;
+            margin-bottom: 15px;
+        }
+
+        .dashboard-card p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+        }
+
+        .card-footer-link {
+            color: #1f0637;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        /* Total Scores Table Styling */
+        #totalScoresTable thead th {
+            background: #1f0637 !important;
+            color: white !important;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 8px;
+        }
+
+        #totalScoresTable tbody td {
+            font-size: 0.85rem;
+            padding: 10px 8px;
+            vertical-align: middle;
+        }
+
+        .bg-soft-total { background-color: #f8f9fa; }
+        .bg-soft-avg { background-color: #f0f7ff; }
+
+        /* Premium Honor Roll / Wall of Fame */
+        .honor-board {
+            background: linear-gradient(to bottom, #fffafb, #ffffff);
+            border-radius: 30px !important;
+            border: 1px solid #ffe4e9 !important;
+            position: relative;
+        }
+
+        .honor-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem 1.2rem;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            border: 2px solid #f8f9fa;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .honor-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.8), rgba(255,255,255,0));
+            z-index: -1;
+        }
+
+        .honor-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(233, 30, 99, 0.12);
+        }
+
+        /* Rank Themes */
+        .honor-rank-1 { 
+            border-color: #ffd700 !important; 
+            background: linear-gradient(145deg, #fffcf0 0%, #ffffff 100%);
+        }
+        .honor-rank-1 .rank-badge { background: linear-gradient(45deg, #ffd700, #ffec8b); scale: 1.2; margin-bottom: 1.5rem; }
+        .honor-rank-1 .honor-name { color: #856404; font-size: 1.1rem; }
+
+        .honor-rank-2 { 
+            border-color: #c0c0c0 !important;
+            background: linear-gradient(145deg, #f8f9fa 0%, #ffffff 100%);
+        }
+        .honor-rank-3 { 
+            border-color: #cd7f32 !important;
+            background: linear-gradient(145deg, #fff8f4 0%, #ffffff 100%);
+        }
+
+        .rank-badge {
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            border-radius: 50%;
+            display: inline-block;
+            font-weight: 900;
+            margin-bottom: 1rem;
+            color: white;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .honor-name {
+            font-family: 'Khmer OS Muol Light', serif !important;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .honor-grade-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            background: #1f0637;
+            color: white;
+            font-weight: bold;
+            font-size: 0.8rem;
+            margin-top: 10px;
+        }
+
+        .honor-footer-info {
+            display: none;
+            text-align: center;
+            margin-top: 40px;
+            font-family: 'Kantumruy-Light', sans-serif;
+        }
+
+        @media print {
+            .honor-footer-info { display: block !important; }
+            .honor-board { border: none !important; box-shadow: none !important; }
+            .honor-card { border: 2px solid #eee !important; box-shadow: none !important; }
+            .btn-print-honor { display: none !important; }
+        }
+
+        /* New Custom Dashboard Styling */
+        .custom-dashboard-wrapper {
+            background-color: #def0d8; /* Light greenish background */
+            padding: 15px 25px;
+            border-radius: 8px 8px 0 0;
+        }
+        .custom-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .custom-title {
+            color: #008000; /* Green text */
+            font-family: 'Khmer OS Muol Light', serif;
+            font-size: 2.2rem;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .custom-top-controls {
+            display: flex;
+            background: #e1eafc; /* Light blue button area */
+            border: 1px solid #c0d0f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .custom-top-btn {
+            padding: 5px 12px;
+            border: none;
+            background: transparent;
+            border-right: 1px solid #c0d0f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #333;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+        .custom-top-btn:last-child {
+            border-right: none;
+        }
+        .custom-top-btn:hover {
+            background: #d0e0f8;
+        }
+        
+        .custom-filter-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .custom-filter-label {
+            font-size: 1.4rem;
+            color: #666;
+            margin: 0;
+        }
+        .custom-filter-input-group {
+            display: flex;
+            background: white;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            overflow: hidden;
+            width: 220px;
+        }
+        .custom-filter-input-group select {
+            border: none;
+            padding: 8px 15px;
+            width: 100%;
+            outline: none;
+            font-family: 'Kantumruy-Light', sans-serif;
+            font-size: 1.1rem;
+            text-align: center;
+            appearance: none; /* Hide default dropdown arrow */
+            background: transparent;
+        }
+        .custom-filter-input-group .icon-btn {
+            background: #c3d0f0;
+            border: none;
+            border-left: 1px solid #ccc;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #333;
+        }
+        .custom-checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.3rem;
+            color: #666;
+            cursor: pointer;
+            margin-bottom: 0;
+        }
+        .custom-checkbox-group input {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .custom-grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            background: white;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+        }
+        .custom-grid-card {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 15px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            color: #555;
+            min-height: 180px;
+        }
+        .custom-grid-card:hover {
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            border-color: #d0d0d0;
+        }
+        .custom-grid-icon {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .custom-grid-icon i {
+            font-size: 4rem;
+        }
+        .custom-grid-card h4 {
+            font-size: 1.3rem;
+            margin: 0;
+            color: #555;
+        }
+        
+        .icon-settings i { color: #00bcd4; }
+        .icon-entry i { color: #5c6bc0; }
+        .icon-ranking i { color: #78909c; }
+        .icon-list i { color: #4db6ac; }
+        .icon-report i { color: #1976d2; }
+        .icon-certificate i { color: #ffca28; }
+
+        /* User Dashboard Specific Styling - Matching Image */
+        .dashboard-body {
+            background-color: #e8f5e9 !important; /* Mint background from image */
+            min-height: 100vh;
+        }
+
+        .premium-header {
+            background: white;
+            padding: 10px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-logo {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .portal-brand {
+            font-family: 'Khmer OS Muol Light', serif;
+            color: #1f0637;
+            font-size: 1.1rem;
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-meta {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: bold;
+            color: #1f0637;
+            display: block;
+            font-size: 0.95rem;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: #2196f3; /* Blue role text */
+        }
+
+        .logout-btn {
+            background: #fff;
+            border: 1px solid #ff5252;
+            color: #ff5252;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
+            color: white;
+        }
+
+        /* Dashboard Titles */
+        .dash-title-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .dash-main-title {
+            font-family: 'Khmer OS Muol Light', serif;
+            color: #2e7d32; /* Dark Green */
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+        }
+
+        .dash-sub-title {
+            color: #1565c0; /* Blue Subtitle */
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        /* Filter Row Premium */
+        .dash-filter-container {
+            max-width: 900px;
+            margin: 0 auto 30px;
+            background: white;
+            border-radius: 12px;
+            padding: 12px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+
+        .filter-label {
+            font-size: 1.1rem;
+            color: #444;
+            margin: 0;
+        }
+
+        .month-box-selector {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            padding: 0 15px;
+            min-width: 180px;
+        }
+
+        .month-box-selector select {
+            border: none;
+            background: transparent;
+            padding: 8px 10px;
+            width: 100%;
+            outline: none;
+            color: #1f0637;
+            font-weight: 600;
+        }
+
+        .dash-action-icons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .icon-action-btn {
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+            border: none;
+            background: transparent;
+        }
+
+        .icon-action-btn:hover {
+            color: #1f0637;
+        }
+
+        /* Dashboard Grid Premium */
+        .dash-grid-container {
+            max-width: 1100px;
+            margin: 0 auto 50px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        .dash-premium-card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px 20px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.04);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: #1f0637;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid transparent;
+        }
+
+        .dash-premium-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            border-color: #e0e0e0;
+        }
+
+        .card-img-icon {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            object-fit: contain;
+        }
+
+        .dash-premium-card h4 {
+            font-weight: bold;
+            font-size: 1.3rem;
+            margin: 0;
+            font-family: 'Kantumruy-Light', sans-serif;
+        }
+
+        .bg-rank-1 { background: linear-gradient(45deg, #ffd700, #ffec8b); color: #000 !important; }
+        .bg-rank-2 { background: linear-gradient(45deg, #c0c0c0, #e0e0e0); color: #000 !important; }
+        .bg-rank-3 { background: linear-gradient(45deg, #cd7f32, #ee9a49); color: #fff !important; }
+        .bg-rank-other { background: #f1f5f9; color: #475569 !important; border: 1px solid #e2e8f0; }
+
+        .khmer-muol { font-family: 'Khmer OS Muol Light', serif; }
+        .text-pink-primary { color: #1f0637 !important; }
+        .bg-pink-primary { background-color: #1f0637 !important; color: white !important; }
+        .btn-outline-pink-primary { border-color: #1f0637; color: #1f0637; }
+        .btn-outline-pink-primary:hover { background-color: #1f0637; color: white; }
+
+        /* Modern Dashboard Scrollbar */
+        #certificate-section ::-webkit-scrollbar { width: 6px; }
+        #certificate-section ::-webkit-scrollbar-track { background: #f1f1f1; }
+        #certificate-section ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        #certificate-section ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media (max-width: 768px) {
+            .dash-grid-container {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 0 15px;
+            }
+            .dash-main-title { font-size: 2rem; }
+            .dash-sub-title { font-size: 1.4rem; }
+            .premium-header { padding: 10px 15px; }
+        }
     </style>
 
 </head>
@@ -352,16 +1145,118 @@
             </div>
         </div>
 
+        <!-- Teacher Dashboard Section (Matches Image) -->
+        <div id="teacher-dashboard" class="d-none animate__animated animate__fadeIn">
+            <!-- Premium Full Width Header -->
+            <div class="premium-header">
+                <div class="header-left">
+                    <img src="img/logo.jpg" alt="Logo" class="header-logo">
+                    <div>
+                        <h1 class="portal-brand">សាលាអន្តរជាតិ អាយធីខេ</h1>
+                        <small style="font-size: 0.7rem; color: #666; letter-spacing: 1px;">TEACHER PORTAL</small>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-meta">
+                        <span class="user-name" id="dashTeacherNameHeader">គ្រូបង្រៀន</span>
+                        <span class="user-role">គ្រូបង្រៀនមធ្យមសិក្សា | <span class="text-primary" style="cursor: pointer;">ចំណេះដឹងទូទៅ</span></span>
+                    </div>
+                    <button class="logout-btn" onclick="location.reload()" title="ចាកចេញ">
+                        <i class="fi fi-rr-exit"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="container-fluid px-5">
+                <div class="dash-title-container">
+                    <h1 class="dash-main-title">កម្មវិធីគ្រប់គ្រងពិន្ទុសិស្ស</h1>
+                    <h2 class="dash-sub-title">ចំណេះដឹងទូទៅ</h2>
+                </div>
+
+                <!-- Filter Bar -->
+                <div class="dash-filter-container">
+                    <div class="d-flex align-items-center gap-3">
+                        <h4 class="filter-label">សូមជ្រើសរើស</h4>
+                        <div class="month-box-selector">
+                            <select id="dashMonthSelectPremium">
+                                <option value="January">ខែ មករា</option>
+                                <option value="February">ខែ កុម្ភៈ</option>
+                                <option value="March">ខែ មីនា</option>
+                                <option value="April">ខែ មេសា</option>
+                                <option value="May">ខែ ឧសភា</option>
+                                <option value="June">ខែ មិថុនា</option>
+                                <option value="July">ខែ កក្កដា</option>
+                                <option value="August">ខែ សីហា</option>
+                                <option value="September">ខែ កញ្ញា</option>
+                                <option value="October">ខែ តុលា</option>
+                                <option value="November">ខែ វិច្ឆិកា</option>
+                                <option value="December" selected>ខែ ធ្នូ</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="dash-action-icons">
+                        <button class="icon-action-btn"><i class="fi fi-rr-expand"></i></button>
+                        <button class="icon-action-btn"><i class="fi fi-rr-print"></i> GEIP</button>
+                        <button class="icon-action-btn"><i class="fi fi-rr-search"></i></button>
+                    </div>
+                </div>
+
+                <!-- 6 Column Grid -->
+                <div class="dash-grid-container">
+                    <!-- Card 1: Enter Scores -->
+                    <div class="dash-premium-card" onclick="showSection('score-section')">
+                        <img src="https://img.icons8.com/color/96/edit-property.png" class="card-img-icon" alt="Scores">
+                        <h4>បញ្ចូលពិន្ទុ</h4>
+                    </div>
+
+                    <!-- Card 2: Score Table (Previously Score List) -->
+                    <div class="dash-premium-card" onclick="showSection('total-scores-section')">
+                        <img src="https://img.icons8.com/color/96/task.png" class="card-img-icon" alt="Table">
+                        <h4>តារាងពិន្ទុ</h4>
+                    </div>
+
+                    <!-- Card 3: Ranking (Honor Roll) -->
+                    <div class="dash-premium-card" onclick="showSection('honor-roll-view-section')">
+                        <img src="https://img.icons8.com/color/96/medal2.png" class="card-img-icon" alt="Ranking">
+                        <h4>ចំណាត់ថ្នាក់</h4>
+                    </div>
+
+                    <!-- Card 4: Certificates (លិខិតសរសើរ) -->
+                    <div class="dash-premium-card" onclick="showSection('certificate-section')">
+                        <img src="https://img.icons8.com/color/96/certificate.png" class="card-img-icon" alt="Certificate">
+                        <h4>លិខិតសរសើរ</h4>
+                    </div>
+
+                    <!-- Card 5: Settings -->
+                    <div class="dash-premium-card" data-bs-toggle="modal" data-bs-target="#monthSettingsModal">
+                        <img src="https://img.icons8.com/color/96/settings.png" class="card-img-icon" alt="Settings">
+                        <h4>ការកំណត់</h4>
+                    </div>
+
+                    <!-- Card 6: Reports -->
+                    <div class="dash-premium-card" onclick="showSection('reports-section')">
+                        <img src="https://img.icons8.com/color/96/combo-chart--v1.png" class="card-img-icon" alt="Report">
+                        <h4>របាយការណ៍</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Score Entry Section (Hidden by default) -->
         <div id="score-section" class="d-none animate__animated animate__fadeInUp">
+            <div class="mb-3">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+            </div>
             <div class="teacher-info-banner">
                 <div>
                     <span class="text-muted small d-block">គ្រូបង្រៀន៖</span>
-                    <span id="displayTeacherName" class="fw-bold fs-5 text-pink-primary"></span>
+                    <span class="displayTeacherName fw-bold fs-5 text-pink-primary"></span>
                 </div>
                 <div class="text-end">
                     <span class="text-muted small d-block">កាលបរិច្ឆេទ៖</span>
-                    <span id="displayDate" class="fw-bold fs-5 text-pink-primary"></span>
+                    <span class="displayDate fw-bold fs-5 text-pink-primary"></span>
                 </div>
             </div>
 
@@ -393,41 +1288,46 @@
 
             <div class="score-container">
                 <div class="score-header row g-2">
-                    <div class="col-md-3">
-                        <h5 class="mb-0 text-pink-primary fw-bold"><i class="fi fi-rr-edit me-2"></i>បញ្ចូលពិន្ទុ</h5>
+                    <div class="col-md-2">
+                        <h5 class="mb-0 text-pink-primary fw-bold small"><i class="fi fi-rr-edit me-1"></i>បញ្ចូលពិន្ទុ</h5>
                     </div>
-                    <div class="col-md-3">
-                        <select id="periodSelect" class="form-select border-pink shadow-sm fw-bold">
-                            <option value="monthly">ពិន្ទុប្រចាំខែ (Monthly)</option>
-                            <option value="semester1">ពិន្ទុប្រចាំឆមាសទី ១</option>
-                            <option value="semester2">ពិន្ទុប្រចាំឆមាសទី ២</option>
+                    <div class="col-md-2" id="classSelectContainer">
+                        <select id="classSelect" class="form-select border-pink shadow-sm fw-bold">
+                            <option value="">-- គ្រប់ថ្នាក់ --</option>
                         </select>
                     </div>
-                    <div class="col-md-3" id="monthSelectContainer">
+                    <div class="col-md-2">
+                        <select id="periodSelect" class="form-select border-pink shadow-sm fw-bold">
+                            <option value="monthly">ពិន្ទុប្រចាំខែ</option>
+                            <option value="semester1">ឆមាសទី ១</option>
+                            <option value="semester2">ឆមាសទី ២</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2" id="monthSelectContainer">
                         <select id="monthSelect" class="form-select border-pink shadow-sm fw-bold text-primary">
                             <option value="" disabled selected>-- ជ្រើសរើសខែ --</option>
-                            <option value="January">មករា (January)</option>
-                            <option value="February">កុម្ភៈ (February)</option>
-                            <option value="March">មីនា (March)</option>
-                            <option value="April">មេសា (April)</option>
-                            <option value="May">ឧសភា (May)</option>
-                            <option value="June">មិថុនា (June)</option>
-                            <option value="July">កក្កដា (July)</option>
-                            <option value="August">សីហា (August)</option>
-                            <option value="September">កញ្ញា (September)</option>
-                            <option value="October">តុលា (October)</option>
-                            <option value="November">វិច្ឆិកា (November)</option>
-                            <option value="December">ធ្នូ (December)</option>
+                            <option value="January">មករា</option>
+                            <option value="February">កុម្ភៈ</option>
+                            <option value="March">មីនា</option>
+                            <option value="April">មេសា</option>
+                            <option value="May">ឧសភា</option>
+                            <option value="June">មិថុនា</option>
+                            <option value="July">កក្កដា</option>
+                            <option value="August">សីហា</option>
+                            <option value="September">កញ្ញា</option>
+                            <option value="October">តុលា</option>
+                            <option value="November">វិច្ឆិកា</option>
+                            <option value="December">ធ្នូ</option>
                         </select>
                     </div>
-                    <div class="col-md-3 d-flex gap-2">
-                        <button onclick="saveSelectedScores()" class="btn btn-outline-success w-100 p-2 action-column">
-                            <i class="fi fi-rr-check"></i> Save Selected
+                    <div class="col-md-4 d-flex gap-1">
+                        <button onclick="saveSelectedScores()" class="btn btn-outline-success w-100 p-2 action-column small-btn">
+                            <i class="fi fi-rr-check"></i> Save
                         </button>
-                        <button onclick="saveScores()" class="btn btn-save w-100 p-2">
+                        <button onclick="saveScores()" class="btn btn-save w-100 p-2 small-btn">
                             <i class="fi fi-rr-disk"></i> រក្សាទុក
                         </button>
-                        <button onclick="window.print()" class="btn btn-primary w-100 p-2 btn-print-pdf">
+                        <button onclick="window.print()" class="btn btn-primary w-100 p-2 btn-print-pdf small-btn">
                             <i class="fi fi-rr-print"></i> PDF
                         </button>
                     </div>
@@ -445,28 +1345,39 @@
                 </div>
 
                 <div class="row mt-4">
-                    <div class="col-md-6">
-                        <div class="grading-panel shadow-sm border">
+                    <div class="col-md-4">
+                        <div class="grading-panel shadow-sm border h-100">
                             <h6 class="fw-bold text-pink-primary border-bottom pb-2">Grading System</h6>
                             <div class="row">
                                 <div class="col-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><span class="badge bg-success">A+</span> = 96% - 100%</li>
-                                        <li><span class="badge bg-success">A</span> = 90% - 95%</li>
-                                        <li><span class="badge bg-primary">B</span> = 80% - 89%</li>
+                                    <ul class="list-unstyled mb-0 small">
+                                        <li><span class="badge bg-success">A</span> = 90 - 100 (ល្អប្រសើរ)</li>
+                                        <li><span class="badge bg-success">B</span> = 80 - 89 (ល្អណាស់)</li>
+                                        <li><span class="badge bg-primary">C</span> = 70 - 79 (ល្អ)</li>
                                     </ul>
                                 </div>
                                 <div class="col-6">
-                                    <ul class="list-unstyled mb-0">
-                                        <li><span class="badge bg-info">C</span> = 70% - 79%</li>
-                                        <li><span class="badge bg-warning">D</span> = 50% - 69%</li>
-                                        <li><span class="badge bg-danger">F</span> = Under 50%</li>
+                                    <ul class="list-unstyled mb-0 small">
+                                        <li><span class="badge bg-info">D</span> = 60 - 69 (ល្អបង្គួរ)</li>
+                                        <li><span class="badge bg-warning">E</span> = 50 - 59 (មធ្យម)</li>
+                                        <li><span class="badge bg-danger">F</span> = ក្រោម ៥០ (ខ្សោយ)</li>
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-4">
+                        <div class="p-3 border rounded shadow-sm bg-white h-100">
+                            <h6 class="fw-bold mb-3 border-bottom pb-2">បញ្ជីឈ្មោះសិស្សឆ្នើមទាំង ៥ (Top 5 Rankings)</h6>
+                            <div id="top5ListContainer" class="px-2">
+                                <div id="top5List" class="list-group list-group-flush">
+                                    <!-- Top 5 Students listed here -->
+                                    <p class="text-muted small italic text-center py-3">មិនទាន់មានទិន្នន័យចំណាត់ថ្នាក់...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="p-3 border rounded shadow-sm bg-white h-100">
                             <h6 class="fw-bold mb-3 border-bottom pb-2">Summary Note:</h6>
                             <div class="d-flex justify-content-around align-items-center h-75">
@@ -495,8 +1406,8 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="small">
-                                A+ = 96%-100%, A = 90%-95%, B = 80%-89%<br>
-                                C = 70%-79%,&nbsp;&nbsp; D = 50%-69%, F = Under 50%
+                                A = 90-100 (ល្អប្រសើរ), B = 80-89 (ល្អណាស់), C = 70-79 (ល្អ),<br>
+                                D = 60-69 (ល្អបង្គួរ), E = 50-59 (មធ្យម), F = ក្រោម ៥០ (ខ្សោយ)
                             </div>
                             <div class="mt-2 fw-bold">
                                 Note: Passed: <span id="print-passed">0</span> &nbsp;&nbsp;&nbsp; Failed: <span id="print-failed">0</span>
@@ -520,22 +1431,407 @@
                     </div>
                 </div>
 
-                <!-- Honor Roll Section (តារាងកិត្តិយស) -->
-                <div class="honor-roll-section mt-5 pt-4 border-top animate__animated animate__fadeIn" style="display: none;" id="honorRollSection">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div>
-                            <h3 class="fw-bold text-pink-primary mb-0">🏆 តារាងកិត្តិយស (Honor Roll)</h3>
-                            <p class="text-muted small mb-0">Monthly Top Performers | Teacher: <span id="honorTeacherName">...</span></p>
-                        </div>
-                        <button onclick="window.print()" class="btn btn-outline-pink-primary btn-sm rounded-pill btn-print-honor">
-                            <i class="fi fi-rr-print me-1"></i> Print Honor Roll
+            </div>
+        </div>
+
+        <!-- Total Scores Summary Section (NEW) -->
+        <div id="total-scores-section" class="d-none animate__animated animate__fadeInUp">
+            <div class="mb-3">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+            </div>
+            
+            <div class="teacher-info-banner">
+                <div>
+                    <span class="text-muted small d-block">គ្រូបង្រៀន៖</span>
+                    <span class="displayTeacherName fw-bold fs-5 text-pink-primary"></span>
+                </div>
+                <div class="text-end">
+                    <span class="text-muted small d-block">កាលបរិច្ឆេទ៖</span>
+                    <span class="displayDate fw-bold fs-5 text-pink-primary"></span>
+                </div>
+            </div>
+
+            <div class="score-container score-container-wide">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-document-signed me-2"></i>សេចក្តីសង្ខេបពិន្ទុសរុប (Monthly Summary)</h4>
+                        <p class="text-muted small mb-0">គ្រូ៖ <span id="summaryTeacherName">...</span> | <span id="summaryClassDisplay">គ្រប់ថ្នាក់</span></p>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <select id="summaryClassSelect" class="form-select form-select-sm border-pink shadow-sm fw-bold" style="width: 150px;">
+                            <option value="">-- គ្រប់ថ្នាក់ --</option>
+                        </select>
+                        <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill">
+                            <i class="fi fi-rr-print me-1"></i> បោះពុម្ព
                         </button>
                     </div>
-                    <div class="honor-board p-4 rounded-4 shadow-sm bg-white border">
-                        <div class="row g-3 justify-content-center" id="honorRollCards">
-                            <!-- Cards for Rank 1-5 -->
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover" id="totalScoresTable">
+                        <thead class="bg-pink-primary text-white">
+                            <tr class="align-middle">
+                                <th class="text-center" style="width: 50px;">ល.រ</th>
+                                <th style="width: 250px;">ឈ្មោះសិស្ស</th>
+                                <th class="text-center" style="width: 60px;">ភេទ</th>
+                                <th class="text-center">Jan</th>
+                                <th class="text-center">Feb</th>
+                                <th class="text-center">Mar</th>
+                                <th class="text-center">Apr</th>
+                                <th class="text-center">May</th>
+                                <th class="text-center">Jun</th>
+                                <th class="text-center">Jul</th>
+                                <th class="text-center">Aug</th>
+                                <th class="text-center">Sep</th>
+                                <th class="text-center">Oct</th>
+                                <th class="text-center">Nov</th>
+                                <th class="text-center">Dec</th>
+                                <th class="text-center bg-primary" style="width: 80px;">សរុប</th>
+                                <th class="text-center bg-success" style="width: 80px;">មធ្យម</th>
+                            </tr>
+                        </thead>
+                        <tbody id="totalScoresTableBody">
+                            <!-- Data loaded via JS -->
+                        </tbody>
+                        <tfoot id="totalScoresTableFooter" class="bg-light fw-bold">
+                            <!-- Summary stats here -->
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Honor Roll View Section (NEW) -->
+        <div id="honor-roll-view-section" class="d-none animate__animated animate__fadeIn">
+            <div class="mb-3">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+            </div>
+            <div class="score-container mt-4">
+                <div id="honorRollSection">
+                    <!-- Standard A4 Header for Printing -->
+                    <div class="d-flex justify-content-between align-items-start mb-4 honor-print-header container-fluid px-2">
+                        <div class="text-center" style="width: 230px;">
+                            <img src="img/1.jpg" alt="Logo" style="width: 90px; margin-bottom: 8px;">
+                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 0.95rem; line-height: 1.4;">សាលាអន្តរជាតិ អាយធីខេ</div>
+                            <div style="font-size: 0.7rem; font-weight: bold; line-height: 1.2; letter-spacing: 0.5px;">ITK INTERNATIONAL SCHOOL</div>
+                            <div style="font-size: 0.8rem; margin-top: 4px;">.........................................</div>
+                        </div>
+                        <div class="text-center flex-grow-1">
+                             <h2 class="fw-bold text-pink-primary mb-0" style="font-family: 'Khmer OS Muol Light'; font-size: 2.8rem; letter-spacing: 1px;">តារាងកិត្តិយស</h2>
+                             <h1 class="fw-bold text-pink-primary mb-2 mt-2" style="font-family: 'Kantumruy-Light'; font-size: 2.3rem; line-height: 1;">HONOR ROLL</h1>
+                             <h4 class="text-dark fw-bold" id="honorPeriodTitle" style="font-size: 1.6rem; font-family: 'Kantumruy-Light'; margin-top: 15px;">...</h4>
+                        </div>
+                        <div class="text-center" style="width: 230px;">
+                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 1.1rem; line-height: 1.4;">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 1rem; line-height: 1.4;">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                            <div class="mt-2">
+                                <img src="https://img.icons8.com/color/48/cambodia.png" style="width: 45px;">
+                            </div>
                         </div>
                     </div>
+
+                    <div class="mt-4 text-center text-dark fw-bold mb-5" style="font-size: 1.5rem;">
+                        គ្រូបង្រៀន (Teacher): <span id="honorTeacherName" class="text-decoration-underline">...</span>
+                    </div>
+                    
+                    <div class="honor-board p-5 rounded-5 shadow-sm">
+                        <div class="row g-4 justify-content-center" id="honorRollCards">
+                            <!-- Premium Cards Loaded Here -->
+                        </div>
+                    </div>
+
+                    <div class="honor-footer-info">
+                        <div class="row mt-5">
+                            <div class="col-6">
+                                <p>Head of Department</p>
+                                <div style="margin-top: 60px;">_______________________</div>
+                            </div>
+                            <div class="col-6 text-end">
+                                <p>Date: ................................</p>
+                                <p>Class Teacher</p>
+                                <div style="margin-top: 40px; font-weight: bold;" id="honorTeacherSignature">...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end mt-4">
+                        <button onclick="window.print()" class="btn btn-pink-primary rounded-pill px-4 btn-print-honor">
+                            <i class="fi fi-rr-print me-2"></i> បោះពុម្ពតារាងកិត្តិយស
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Section (NEW - Full Dynamic) -->
+        <div id="settings-section" class="d-none animate__animated animate__fadeIn">
+            <div class="mb-3">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+            </div>
+            
+            <div class="score-container mt-4">
+                <div class="row align-items-center mb-4 pb-3 border-bottom">
+                    <div class="col-auto">
+                        <div class="bg-soft-primary p-3 rounded-circle">
+                            <img src="https://img.icons8.com/color/96/user-male-circle--v1.png" style="width: 60px;" alt="Profile">
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h2 class="fw-bold text-pink-primary mb-1" id="settingsTeacherName">លោកគ្រូ/អ្នកគ្រូ</h2>
+                        <p class="text-muted mb-0">គ្រប់គ្រងគណនី និងសុវត្ថិភាព Portal របស់លោកអ្នក</p>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+                    <div class="col-md-7">
+                        <div class="card border-0 shadow-sm bg-light" style="border-radius: 15px;">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-pink-primary mb-4">
+                                    <i class="fi fi-rr-shield-check me-2"></i>ផ្លាស់ប្តូរលេខកូដសម្ងាត់ (Security)
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold small">លេខកូដសម្ងាត់បច្ចុប្បន្ន (Current Secret Code)</label>
+                                    <div class="input-group bg-white rounded shadow-sm">
+                                        <span class="input-group-text bg-white border-0"><i class="fi fi-rr-lock"></i></span>
+                                        <input type="password" id="currentCode" class="form-control border-0" placeholder="បញ្ចូលលេខកូដចាស់">
+                                    </div>
+                                </div>
+                                
+                                <div class="row g-3 mb-4">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">លេខកូដសម្ងាត់ថ្មី</label>
+                                        <div class="input-group bg-white rounded shadow-sm">
+                                            <span class="input-group-text bg-white border-0"><i class="fi fi-rr-key"></i></span>
+                                            <input type="password" id="newCode" class="form-control border-0" placeholder="បញ្ចូលលេខកូដថ្មី">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-bold small">បញ្ជាក់លេខកូដថ្មី</label>
+                                        <div class="input-group bg-white rounded shadow-sm">
+                                            <span class="input-group-text bg-white border-0"><i class="fi fi-rr-key"></i></span>
+                                            <input type="password" id="confirmNewCode" class="form-control border-0" placeholder="បញ្ចូលលេខកូដថ្មីម្តងទៀត">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="btn btn-pink-primary w-100 rounded-pill py-3 fw-bold shadow-sm" onclick="updateTeacherSettings()">
+                                    រក្សាទុកការផ្លាស់ប្តូរ
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <div class="card border-0 shadow-sm h-100" style="border-radius: 15px; border-left: 5px solid #1f0637 !important;">
+                            <div class="card-body p-4">
+                                <h5 class="fw-bold text-pink-primary mb-4">
+                                    <i class="fi fi-rr-info me-2"></i>ព័ត៌មានការងារ (Account Info)
+                                </h5>
+                                
+                                <div class="mb-3 d-flex justify-content-between align-items-center p-3 bg-light rounded-3">
+                                    <span class="text-muted small">ស្ថានភាពបង្រៀន</span>
+                                    <span class="badge bg-success">Active</span>
+                                </div>
+                                
+                                <div class="mb-3 d-flex justify-content-between align-items-center p-3 bg-light rounded-3">
+                                    <span class="text-muted small">ផ្នែក (Department)</span>
+                                    <span class="fw-bold text-primary">ចំណេះដឹងទូទៅ</span>
+                                </div>
+                                
+                                <div class="mb-3 d-flex justify-content-between align-items-center p-3 bg-light rounded-3">
+                                    <span class="text-muted small">ចំនួនសិស្សសរុប</span>
+                                    <span class="fw-bold text-pink-primary" id="settingsStudentCount">0 នាក់</span>
+                                </div>
+
+                                <div class="alert alert-info border-0 shadow-sm mt-4">
+                                    <i class="fi fi-rr-shield-exclamation me-2"></i>
+                                    <small>សូមរក្សាទុកលេខកូដសម្ងាត់ឲ្យមានសុវត្ថិភាព និងកុំចែករំលែកទៅអ្នកដទៃ។</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Certificate Section -->
+        <div id="certificate-section" class="d-none animate__animated animate__fadeIn">
+            <div class="mb-3 d-flex justify-content-between align-items-center">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm rounded-pill" onclick="window.print()">
+                        <i class="fi fi-rr-print me-1"></i> បោះពុម្ពលិខិតសរសើរ
+                    </button>
+                    <button class="btn btn-outline-pink-primary btn-sm rounded-pill" onclick="toggleCertificatePreview()">
+                        <i class="fi fi-rr-eye me-1"></i> មើលគំរូ
+                    </button>
+                </div>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
+                        <div class="card-header bg-white border-0 p-4 pb-0">
+                            <h4 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-users me-2"></i>បញ្ជីសិស្សឆ្នើម</h4>
+                            <p class="text-muted small mb-0">ជ្រើសរើសសិស្សដើម្បីពិនិត្យលិខិតសរសើរ</p>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle">
+                                    <thead class="bg-light">
+                                        <tr class="text-muted small">
+                                            <th style="width: 50px;">ល.រ</th>
+                                            <th>ឈ្មោះសិស្ស</th>
+                                            <th style="width: 100px;">មធ្យមភាគ</th>
+                                            <th style="width: 100px;" class="text-center">សកម្មភាព</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="certificateStudentList">
+                                        <!-- Loaded via JS -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-7">
+                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100" style="background: #f1f3f6;">
+                        <div class="card-header bg-white border-0 p-3 d-flex justify-content-between align-items-center">
+                            <span class="fw-bold text-muted small"><i class="fi fi-rr-document me-1"></i> ទិដ្ឋភាពលិខិតសរសើរ (Live Preview)</span>
+                            <div class="d-flex gap-2">
+                                <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-bill">A4 Landscape Mode</span>
+                            </div>
+                        </div>
+                        
+                        <div class="card-body p-0 d-flex justify-content-center align-items-start overflow-auto" style="min-height: 650px; background: #eef1f5; background-image: radial-gradient(#d1d9e6 1px, transparent 1px); background-size: 20px 20px;">
+                            <div class="cert-preview-wrapper p-5">
+                                <div id="uiCertificatePreview" class="certificate-paper-preview">
+                                     <!-- Content injected by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Reports Section -->
+        <div id="reports-section" class="d-none animate__animated animate__fadeIn">
+            <div class="mb-3">
+                <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
+                    <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
+                </button>
+            </div>
+            
+            <div class="score-container">
+                <div class="text-center py-5">
+                    <i class="fi fi-rr-stats text-muted mb-3" style="font-size: 4rem;"></i>
+                    <h3 class="fw-bold text-pink-primary">របាយការណ៍សរុប (Reports)</h3>
+                    <p class="text-muted">មុខងារនេះកំពុងត្រូវបានរៀបចំ...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- HIDDEN: Dynamic Certificate Template for Printing -->
+        <div id="printableCertificate" class="certificate-paper">
+            <div class="cert-outer-border">
+                <div class="cert-inner-border">
+                    <div class="cert-header">
+                        <div class="cert-header-left">
+                            <img src="img/logo.jpg" class="cert-moeys-logo">
+                            <div class="cert-dept">
+                                ការិយាល័យអប់រំ យុវជន និងកីឡា ស្រុក........<br>
+                                សាលាបឋមសិក្សា ....................
+                            </div>
+                        </div>
+                        <div class="cert-header-right">
+                            <div class="cert-country">ព្រះរាជាណាចក្រកម្ពុជា</div>
+                            <div class="cert-motto">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
+                            <div class="mt-2">
+                                <img src="https://img.icons8.com/color/48/cambodia.png" style="width: 40px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cert-title-container">
+                        <h1 class="cert-main-title">ប័ណ្ណសរសើរ</h1>
+                        <div class="cert-subtitle">នាយកសាលា ....................</div>
+                    </div>
+
+                    <div class="cert-body-text">
+                        សូមសរសើរចំពោះសិស្សឈ្មោះ <span class="highlight-red" id="certStudentName">...</span> 
+                        ភេទ <span class="muol" id="certStudentGender">...</span> 
+                        រៀនថ្នាក់ទី <span class="muol" id="certStudentClass">...</span> នៃសាលាបឋមសិក្សា ....................
+                        ដែលបានខិតខំរៀនសូត្រទទួលបានលទ្ធផលល្អក្នុងការសិក្សា និងទទួលបានចំណាត់ថ្នាក់លេខ 
+                        <span class="highlight-red" id="certStudentRank">...</span> 
+                        ប្រចាំខែ <span class="muol" id="certStudentPeriod">...</span> ឆ្នាំសិក្សា <span class="muol">២០២៥-២០២៦</span> ។
+                        <br>
+                        ប័ណ្ណសរសើរនេះប្រគល់ជូនសាមីខ្លួនប្រើប្រាស់តាមការដែលអាចប្រើបាន។
+                    </div>
+
+                    <div class="cert-footer-layout">
+                        <div class="footer-sign-box">
+                            <div class="muol">បានឃើញ និងឯកភាព</div>
+                            <div class="muol mt-1">នាយកសាលា</div>
+                        </div>
+                        <div class="footer-sign-box">
+                            <div id="certCurrentDate" class="footer-date">ថ្ងៃ........ ខែ........ ឆ្នាំ........</div>
+                            <div class="muol">គ្រូប្រចាំថ្នាក់</div>
+                            <div class="mt-4 fw-bold displayTeacherName">...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Month Selection Configuration Modal (Matches Image Exactly) -->
+    <div class="modal fade" id="monthSettingsModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="modal-header modal-header-green">
+                    <button type="button" class="close-config-btn" data-bs-dismiss="modal">×</button>
+                    <h2 class="modal-title-green">ការកំណត់ការជ្រើសរើសខែ</h2>
+                    <p class="modal-subtitle-green">កំណត់ឈ្មោះខែ និងជ្រើសរើសវគ្គសិក្សាសកម្ម</p>
+                </div>
+                <div class="modal-body p-0">
+                    <div class="table-responsive px-4 pt-4">
+                        <table class="table config-table">
+                            <thead>
+                                <tr>
+                                    <th>Code</th>
+                                    <th>ឈ្មោះខែ/វគ្គសិក្សា</th>
+                                    <th>ចំណាត់</th>
+                                    <th>សកម្មភាព</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="monthConfigTableBody">
+                                <!-- Dynamic Rows Loaded Here -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="px-4 mb-4">
+                        <button class="btn btn-add-row" onclick="addNewMonthRow()">
+                            <i class="fi fi-rr-plus small me-1"></i> បន្ថែមជួរថ្មី
+                        </button>
+                    </div>
+                </div>
+                <div class="modal-footer modal-footer-config">
+                    <button type="button" class="btn btn-cancel-config" data-bs-dismiss="modal">បោះបង់</button>
+                    <button type="button" class="btn-save-all" onclick="saveMonthSettings()">
+                        <i class="fi fi-rr-disk"></i> រក្សាទុកទាំងអស់
+                    </button>
                 </div>
             </div>
         </div>
@@ -637,6 +1933,217 @@
         .honor-detail { font-size: 0.75rem; color: #666; }
         .honor-grade { font-size: 1.1rem; margin-top: 10px; font-weight: bold; }
 
+        /* Month Configuration Modal Styles - Absolute Exact Match */
+        #monthSettingsModal .modal-content {
+            border-radius: 20px;
+            border: none;
+            overflow: hidden;
+        }
+
+        .modal-header-green {
+            border-bottom: 1px solid #edf2f7;
+            padding: 30px 40px 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-title-green {
+            color: #1a7143;
+            font-family: 'Khmer OS Muol Light', serif;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .modal-subtitle-green {
+            color: #718096;
+            font-size: 0.9rem;
+            font-family: 'Khmer OS Content', sans-serif;
+            margin-bottom: 0;
+        }
+
+        .close-config-btn {
+            position: absolute;
+            right: 25px;
+            top: 25px;
+            background: transparent;
+            border: none;
+            font-size: 1.8rem;
+            color: #a0aec0;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .config-table thead th {
+            font-weight: 700;
+            color: #000;
+            border-bottom: 1px solid #edf2f7;
+            text-align: left;
+            padding: 20px 10px;
+            font-size: 1rem;
+            font-family: 'Khmer OS Content', sans-serif;
+        }
+
+        .config-table thead th:first-child,
+        .config-table thead th:nth-child(3),
+        .config-table thead th:nth-child(4) {
+            text-align: center;
+        }
+
+        .config-table tbody td {
+            vertical-align: middle;
+            padding: 15px 5px;
+            border-bottom: 1px solid #f7fafc;
+        }
+
+        .code-badge {
+            display: inline-block;
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            background: #edf2f7;
+            color: #718096;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        .month-name-input {
+            font-weight: 700;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+            padding: 8px 15px;
+            outline: none;
+            color: #000;
+            font-size: 1.1rem;
+            font-family: 'Khmer OS Content', sans-serif;
+        }
+
+        .config-select {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 6px 12px;
+            background: #fff;
+            outline: none;
+            cursor: pointer;
+            color: #2d3748;
+            font-weight: 600;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%234A5568'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 14px;
+            padding-right: 32px;
+            font-size: 0.95rem;
+            width: 80px;
+            text-align: center;
+        }
+
+        .btn-status-active {
+            background: #e6f7ef;
+            color: #1a7143;
+            border: none;
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: default;
+        }
+
+        .btn-status-inactive {
+            background: #fff;
+            color: #1a7143;
+            border: 1.5px solid #1a7143;
+            border-radius: 20px;
+            padding: 6px 20px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            transition: all 0.2s;
+        }
+
+        .btn-status-inactive:hover {
+            background: #1a7143;
+            color: white;
+        }
+
+        .btn-delete-row {
+            color: #f56565;
+            background: transparent;
+            border: 1px solid #fed7d7;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-delete-row:hover {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-add-row {
+            color: #3182ce;
+            background: #ebf8ff;
+            border: none;
+            border-radius: 30px;
+            padding: 8px 25px;
+            font-weight: 700;
+            margin-top: 15px;
+            font-size: 1rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-add-row:hover {
+            background: #3182ce;
+            color: white;
+        }
+
+        .modal-footer-config {
+            border-top: none;
+            justify-content: flex-start;
+            gap: 15px;
+            padding: 20px 40px 50px;
+        }
+
+        .btn-save-all {
+            background: #276749;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 35px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .btn-cancel-config {
+            background: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 12px 35px;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
         @media print {
             .btn-print-honor, .action-column, .score-header, .grading-panel, .btn-save, #monthSelectContainer {
                 display: none !important;
@@ -659,6 +2166,33 @@
                 print-color-adjust: exact;
             }
         }
+        /* Premium Honor Roll View Section */
+        #honor-roll-view-section {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        #honor-roll-standalone-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.05);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #honor-roll-standalone-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: linear-gradient(90deg, #1f0637, #e91e63);
+        }
     </style>
 
     <!-- Firebase SDKs (v9 Compat) -->
@@ -671,25 +2205,31 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- Project Scripts -->
-    <script src="firebase-config.js"></script>
-    <script src="auth-check.js"></script>
-    <script src="loader.js"></script>
-    <script src="sidebar-loader.js"></script>
-    <script src="teacher-scores-script.js"></script>
+    <script src="js/firebase-config.js"></script>
+    <script src="js/r2-config.js"></script>
+    <script src="js/r2-uploader.js"></script>
+    <script src="js/auth-check.js"></script>
+    <script src="js/loader.js"></script>
+    <script src="js/sidebar-loader.js"></script>
+    <script src="js/teacher-scores-script.js"></script>
 
     <script>
         // Update footer date and signature dynamically after login
         document.getElementById('teacherLoginForm').addEventListener('submit', function() {
             setTimeout(() => {
-                const teacherName = document.getElementById('displayTeacherName').textContent;
-                const dateText = document.getElementById('displayDate').textContent;
-                if (teacherName && dateText) {
+                const nameEl = document.querySelector('.displayTeacherName');
+                const dateEl = document.querySelector('.displayDate');
+                
+                if (nameEl && dateEl) {
+                    const teacherName = nameEl.textContent;
+                    const dateText = dateEl.textContent;
+                    
                     const signatureEl = document.getElementById('signatureTeacherName');
                     const footerDateEl = document.getElementById('footerDate');
                     if (signatureEl) signatureEl.textContent = teacherName;
                     if (footerDateEl) footerDateEl.textContent = dateText;
                 }
-            }, 500); // Shorter delay but safer
+            }, 500); 
         });
     </script>
 </body>

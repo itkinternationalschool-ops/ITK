@@ -1,8 +1,8 @@
-* {
+﻿* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-  font-family: 'Khmer OS Battambang', sans-serif;
+  font-family: 'Kantumruy-Light', sans-serif;
   font-feature-settings: "kern" 1, "liga" 1;
 }
 
@@ -90,7 +90,7 @@ body {
 }
 
 .loader-text {
-  font-family: 'Khmer OS Battambang', serif;
+  font-family: 'Kantumruy-Light', serif;
   font-weight: bold;
   color: #8a0e5b;
   font-size: 1.2rem;

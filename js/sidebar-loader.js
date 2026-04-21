@@ -1,9 +1,15 @@
+/**
+ * sidebar-loader.js
+ * Loads the sidebar dynamically without using fetch() to avoid CORS issues on file:// protocol.
+ */
+
+const SIDEBAR_HTML = `
 <div id="sidebar">
     <div class="sidebar-header">
         <a href="index.html">
             <img src="img/logo.jpg" alt="School Logo" id="sidebar-logo">
         </a>
-        <span class="sidebar-title-text" style="color: white; font-family: 'Khmer OS Battambang', serif;">
+        <span class="sidebar-title-text" style="color: white; font-family: 'Kantumruy-Light', serif;">
             ប្រព័ន្ធគ្រប់គ្រងសាលា
         </span>
     </div>
@@ -43,9 +49,14 @@
     <!-- User Profile Section -->
     <div class="px-3 py-3 text-white border-top border-bottom border-white-10" style="background: rgba(0,0,0,0.05);">
         <div class="text-center">
-            <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2 shadow-sm"
-                style="width: 50px; height: 50px;">
-                <i class="fi fi-rr-user-circle text-primary fa-2x"></i>
+            <div id="user-avatar-container" class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-2 shadow-sm"
+                style="width: 50px; height: 50px; cursor: pointer; overflow: hidden; position: relative;">
+                <i id="user-avatar-placeholder" class="fi fi-rr-user-circle text-primary fa-2x"></i>
+                <img id="user-avatar-img" src="" alt="Avatar" style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                <input type="file" id="user-avatar-input" accept="image/*" style="display: none;">
+                <div id="avatar-upload-overlay" style="display: none; position: absolute; bottom: 0; left: 0; width: 100%; height: 40%; background: rgba(0,0,0,0.5); color: white; font-size: 8px; align-items: center; justify-content: center;">
+                    <i class="fi fi-rr-camera"></i>
+                </div>
             </div>
             <div style="font-size: 0.85rem;">
                 <div class="fw-bold text-truncate mb-1" id="user-display-name" style="font-size: 1rem;">...
@@ -61,3 +72,42 @@
         <i class="fi fi-rr-sign-out-alt"></i> ចាកចេញ
     </a>
 </div>
+`;
+
+document.addEventListener("DOMContentLoaded", function () {
+    const existingSidebar = document.getElementById('sidebar');
+    const wrapper = document.getElementById('wrapper');
+
+    // Inject HTML
+    if (existingSidebar) {
+        existingSidebar.outerHTML = SIDEBAR_HTML;
+    } else if (wrapper) {
+        wrapper.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
+    } else {
+        document.body.insertAdjacentHTML('afterbegin', SIDEBAR_HTML);
+    }
+
+    // Highlight active link
+    const path = window.location.pathname;
+    const page = path.split("/").pop() || 'index.html';
+
+    const links = document.querySelectorAll('#sidebar .nav-link');
+    links.forEach(link => {
+        const href = link.getAttribute('href');
+        // Handle "index.html" mapping to root or explicit index
+        if (href === page || (page === '' && href === 'index.html')) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+
+    // Dispatch event saying sidebar is ready
+    const event = new Event('sidebarLoaded');
+    document.dispatchEvent(event);
+
+    // Re-run mobile nav init if available
+    if (window.initMobileNav) {
+        window.initMobileNav();
+    }
+});

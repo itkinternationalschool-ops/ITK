@@ -56,6 +56,7 @@ let currentFilters = {
     status: 'all',
     filterTime: 'all',
     filterLevel: 'all',
+    filterClass: 'all',
     gender: 'all',
     startDate: '',
     endDate: ''
@@ -94,6 +95,7 @@ const filterStudents = (studentsArray) => {
                     s.englishFirstName || '',
                     s.englishName || '',
                     s.displayId || '',
+                    s.classRoom || '',
                     `${s.lastName || ''}${s.firstName || ''}`, // Combined no space
                     `${s.englishLastName || ''}${s.englishFirstName || ''}`
                 ].join(' ').toLowerCase();
@@ -134,6 +136,12 @@ const filterStudents = (studentsArray) => {
         if (currentFilters.filterLevel !== 'all') {
             const sLevel = (s.studyLevel || '').trim();
             if (sLevel !== currentFilters.filterLevel) return false;
+        }
+
+        // 4.5 Class Filter
+        if (currentFilters.filterClass !== 'all') {
+            const sClass = (s.classRoom || '').trim();
+            if (sClass !== currentFilters.filterClass) return false;
         }
 
         // 5. Gender Filter
@@ -537,6 +545,7 @@ const populateDynamicFilters = (students) => {
             // Update filter state if the selected option disappeared (optional, but safer)
             if (attribute === 'studyTime') currentFilters.filterTime = 'all';
             if (attribute === 'studyLevel') currentFilters.filterLevel = 'all';
+            if (attribute === 'classRoom') currentFilters.filterClass = 'all';
         }
     };
 
@@ -559,6 +568,7 @@ const populateDynamicFilters = (students) => {
 
     populateSelect('filterTime', 'studyTime', '🔍 ទាំងអស់ (ម៉ោង)', timeSort);
     populateSelect('filterLevel', 'studyLevel', '🎓 ទាំងអស់ (កម្រិត)', levelSort);
+    populateSelect('filterClass', 'classRoom', '🏫 ទាំងអស់ (ថ្នាក់)');
 };
 
 // ----------------------------------------------------
@@ -708,8 +718,19 @@ function renderTableData(studentsArray) {
                 <td class="fw-bold text-secondary">${i + 1}</td>
                 <td><span class="badge bg-light text-dark border shadow-sm">${s.displayId}</span></td>
                 <td class="text-start align-middle" onclick="viewStudentDetails('${s.key}')" style="cursor: pointer;">
-                    <div class="fw-bold text-dark text-nowrap">${s.lastName || ''} ${s.firstName || ''}</div>
-                    <div class="small text-muted">${s.englishName || ''}</div>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-2">
+                            <div class="rounded-circle border overflow-hidden bg-light d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
+                                ${s.studentPhoto || s.imageUrl ? 
+                                    `<img src="${s.studentPhoto || s.imageUrl}" class="w-100 h-100 object-fit-cover">` : 
+                                    `<i class="fi fi-rr-user text-secondary" style="font-size: 1rem;"></i>`}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark text-nowrap">${s.lastName || ''} ${s.firstName || ''}</div>
+                            <div class="small text-muted" style="font-size: 9px;">${s.englishName || ''}</div>
+                        </div>
+                    </div>
                     <span class="d-none">${searchTerms}</span>
                 </td>
                 <td>${s.gender === 'Male' ? 'ប្រុស' : 'ស្រី'}</td>
@@ -734,12 +755,24 @@ function renderTableData(studentsArray) {
                 <td class="fw-bold text-secondary">${i + 1}</td>
                 <td><span class="badge bg-light text-dark border shadow-sm">${s.displayId}</span></td>
                 <td class="text-start align-middle" onclick="viewStudentDetails('${s.key}')" style="cursor: pointer;">
-                    <div class="fw-bold text-dark text-nowrap">${s.lastName || ''} ${s.firstName || ''}</div>
-                    <div class="small text-muted">${s.englishName || ''}</div>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0 me-2">
+                            <div class="rounded-circle border overflow-hidden bg-light d-flex align-items-center justify-content-center shadow-sm" style="width: 32px; height: 32px;">
+                                ${s.studentPhoto || s.imageUrl ? 
+                                    `<img src="${s.studentPhoto || s.imageUrl}" class="w-100 h-100 object-fit-cover">` : 
+                                    `<i class="fi fi-rr-user text-secondary" style="font-size: 1rem;"></i>`}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="fw-bold text-dark text-nowrap">${s.lastName || ''} ${s.firstName || ''}</div>
+                            <div class="small text-muted" style="font-size: 9px;">${s.englishName || ''}</div>
+                        </div>
+                    </div>
                     <span class="d-none">${searchTerms}</span>
                 </td>
                 <td>${s.gender === 'Male' ? 'ប្រុស' : 'ស្រី'}</td>
                 <td>${s.studyLevel || '-'}</td>
+                <td class="fw-bold text-primary">${s.classRoom || '-'}</td>
                 <td class="text-start">${s.teacherName || '-'}</td>
                 <td>${toKhmerDate(s.startDate)}</td>
                 <td>${formatDueDateWithColor(s)}</td>
@@ -822,6 +855,8 @@ function initializeDataTable() {
     if (!$.fn.DataTable.isDataTable('#studentTable')) {
         studentDataTable = $('#studentTable').DataTable({
             pagingType: 'full_numbers',
+            pageLength: 25,
+            lengthMenu: [[10, 25, 50, 100, -1], [10, 25, 50, 100, "ទាំងអស់"]],
             dom: '<"row mb-3"<"col-md-12"l>>rt<"row mt-3 align-items-center"<"col-md-6"i><"col-md-6 d-flex justify-content-end"p>><"clear">',
             columnDefs: [{ orderable: false, targets: [13] }],
             order: [[1, 'asc']], // Order by Student ID
@@ -1034,14 +1069,30 @@ function viewStudentDetails(studentKey) {
                 <div class="card-body p-4 p-md-5">
                     <div class="row align-items-center g-4">
                         <div class="col-auto">
-                            <div class="position-relative">
-                                ${s.imageUrl ?
-            `<img src="${s.imageUrl}" class="rounded-circle border border-4 border-white shadow-lg" style="width: 130px; height: 130px; object-fit: cover;">` :
-            `<div class="rounded-circle bg-white d-flex align-items-center justify-content-center text-secondary border border-4 border-white shadow-lg" style="width: 130px; height: 130px; font-size: 3.5rem;">
-                                        <i class="fi fi-rr-user"></i>
-                                    </div>`
+                            <div class="position-relative student-photo-container mx-auto" style="width: 130px; height: 130px;">
+                                <div id="detail_photoPreview" class="photo-preview-wrapper shadow-lg border border-4 border-white rounded-circle overflow-hidden bg-white d-flex align-items-center justify-content-center" style="width: 130px; height: 130px; cursor: pointer;" onclick="document.getElementById('detail_photoInput').click()">
+                                    ${s.studentPhoto || s.imageUrl ?
+            `<img src="${s.studentPhoto || s.imageUrl}" class="w-100 h-100 object-fit-cover">` :
+            `<i class="fi fi-rr-user text-secondary" style="font-size: 3.5rem;"></i>`
         }
-                                <div class="position-absolute bottom-0 end-0 p-1 ${status === 'active' ? 'bg-success' : 'bg-danger'} border border-3 border-white rounded-circle shadow-sm" style="width: 20px; height: 20px;"></div>
+                                    <div class="photo-edit-overlay">
+                                        <i class="fi fi-rr-camera text-white"></i>
+                                    </div>
+                                </div>
+                                
+                                ${s.studentPhoto || s.imageUrl ? 
+                                    `<button class="btn btn-danger btn-sm rounded-circle position-absolute" 
+                                             style="top: 0; right: 0; width: 30px; height: 30px; z-index: 20; border: 2px solid white; display: flex; align-items: center; justify-content: center;"
+                                             onclick="handleRemoveDetailPhoto(event, '${s.key}')" title="លុបរូបថត">
+                                        <i class="fi fi-rr-cross-small" style="font-size: 1rem;"></i>
+                                    </button>` : ''
+                                }
+
+                                <input type="file" id="detail_photoInput" accept="image/*" style="display: none;" onchange="handleDetailPhotoUpload(this, '${s.key}')">
+                                <div id="detail_uploadStatus" class="position-absolute bottom-0 start-50 translate-middle-x badge bg-dark bg-opacity-75 text-white p-1 rounded-pill d-none" style="font-size: 0.6rem; z-index: 10;">
+                                    កំពុងបញ្ជូន...
+                                </div>
+                                <div class="position-absolute bottom-0 end-0 p-1 ${status === 'active' ? 'bg-success' : 'bg-danger'} border border-3 border-white rounded-circle shadow-sm" style="width: 22px; height: 22px; z-index: 5;"></div>
                             </div>
                         </div>
                         <div class="col text-center text-md-start text-white">
@@ -1096,6 +1147,10 @@ function viewStudentDetails(studentKey) {
                                 <div class="col-sm-6 p-2 border-bottom border-light">
                                     <label class="text-muted small fw-bold mb-1">កម្រិតសិក្សា (Level)</label>
                                     <div class="fw-bold text-dark">${s.studyLevel || 'N/A'}</div>
+                                </div>
+                                <div class="col-sm-6 p-2 border-bottom border-light">
+                                    <label class="text-muted small fw-bold mb-1">ថ្នាក់រៀន (Class Room)</label>
+                                    <div class="fw-bold text-dark font-khmer text-primary">${s.classRoom || 'N/A'}</div>
                                 </div>
                                 <div class="col-sm-6 p-2 border-bottom border-light">
                                     <label class="text-muted small fw-bold mb-1">ម៉ោងសិក្សា (Study Time)</label>
@@ -1234,6 +1289,11 @@ function viewStudentDetails(studentKey) {
         if (!studentDetailsModal) {
             studentDetailsModal = new bootstrap.Modal(document.getElementById('studentDetailsModal'));
         }
+        
+        // Remove aria-hidden before showing to avoid accessibility warnings
+        const modalEl = document.getElementById('studentDetailsModal');
+        modalEl.removeAttribute('aria-hidden');
+        
         studentDetailsModal.show();
     }
 
@@ -1386,14 +1446,14 @@ function createEditModal(student) {
                                 <!-- 2. Academic Info (Renumbered as Address tab is removed) -->
                                 <div class="tab-pane fade" id="pills-academic" role="tabpanel">
                                     <div class="row g-3 p-3">
-                                        <div class="col-md-4">
+                                        <div class="col-md-3">
                                             <label class="form-label small fw-bold">មុខវិជ្ជា (Subject)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-white"><i class="fi fi-rr-book-alt text-success"></i></span>
                                                 <input type="text" class="form-control" name="subject" value="${student.subject || ''}">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <label class="form-label small fw-bold">កម្រិតសិក្សា (Level)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-white"><i class="fi fi-rr-chart-line-up text-info"></i></span>
@@ -1401,13 +1461,19 @@ function createEditModal(student) {
                                             </div>
                                         </div>
                                         <div class="col-md-2">
-                                            <label class="form-label small fw-bold">ជំនាន់ (Gen)</label>
+                                            <label class="form-label small fw-bold">ថ្នាក់រៀន (Class)</label>
                                             <div class="input-group">
-                                                <span class="input-group-text bg-white"><i class="fi fi-rr-layers text-warning"></i></span>
+                                                <span class="input-group-text bg-white"><i class="fi fi-rr-school text-primary"></i></span>
+                                                <input type="text" class="form-control" name="classRoom" value="${student.classRoom || ''}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label class="form-label small fw-bold">ជំនាន់</label>
+                                            <div class="input-group">
                                                 <input type="text" class="form-control" name="generation" value="${student.generation || ''}">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-4">
                                             <label class="form-label small fw-bold">គ្រូបង្រៀន (Teacher)</label>
                                             <div class="input-group">
                                                 <span class="input-group-text bg-white"><i class="fi fi-rr-chalkboard-user text-primary"></i></span>
@@ -1608,11 +1674,39 @@ function saveStudentChanges(key) {
 // Actions: Delete & Mark as Paid
 // ----------------------------------------------------
 
-function deleteStudent(key, displayId) {
-    if (!confirm(`តើអ្នកចង់លុបសិស្ស ID: ${displayId} មែនទេ?`)) return;
-    studentsRef.child(key).remove()
-        .then(() => showAlert(`លុប ID: ${displayId} ជោគជ័យ`, 'success'))
-        .catch(e => showAlert(e.message, 'danger'));
+async function deleteStudent(key, displayId) {
+    const result = await Swal.fire({
+        title: 'តើអ្នកចង់លុបសិស្សនេះមែនទេ?',
+        text: `តើអ្នកចង់លុបសិស្ស ID: ${displayId} មែនទេ? ទិន្នន័យលម្អិតនិងរូបភាពនឹងត្រូវលុបចេញទាំងស្រុង!`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'បាទ លុបចេញ',
+        cancelButtonText: 'បោះបង់',
+        target: document.getElementById('studentDetailsModal') || document.body
+    });
+
+    if (result.isConfirmed) {
+        // Find photo URL to delete from R2
+        const student = window.allStudentsData ? window.allStudentsData[key] : null;
+        if (student) {
+            const photoToDelete = student.studentPhoto || student.imageUrl;
+            if (photoToDelete && window.deleteFromCloudflare) {
+                await window.deleteFromCloudflare(photoToDelete);
+            }
+        }
+
+        studentsRef.child(key).remove()
+            .then(() => {
+                showAlert(`លុប ID: ${displayId} ជោគជ័យ`, 'success');
+                // Close modal if it's open
+                if (typeof studentDetailsModal !== 'undefined' && studentDetailsModal) {
+                    studentDetailsModal.hide();
+                }
+            })
+            .catch(e => showAlert(e.message, 'danger'));
+    }
 }
 
 
@@ -2469,20 +2563,20 @@ function generateStandardPDF(students, title, subtitle = '') {
         <style>
             @page { margin: 20mm; size: auto; }
             @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                     url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                     url('fonts/Kantumruy-Light.ttf') format('truetype');
                 font-weight: normal;
                 font-style: normal;
             }
             @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype');
                 font-weight: bold;
                 font-style: normal;
             }
             body { 
-                font-family: 'Khmer OS Battambang', sans-serif !important; 
+                font-family: 'Kantumruy-Light', sans-serif !important; 
                 padding: 20px; 
                 color: #333; 
                 background: #fff; 
@@ -2785,21 +2879,21 @@ function generateDetailedAlertReport() {
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
         <style>
             @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.woff2') format('woff2'),
-                    url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype'),
+                    url('fonts/Kantumruy-Light.ttf') format('truetype');
                 font-weight: normal;
                 font-style: normal;
             }
             @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype');
                 font-weight: bold;
                 font-style: normal;
             }
             @page { margin: 20mm; size: auto; }
             body { 
-                font-family: 'Khmer OS Battambang', sans-serif !important; 
+                font-family: 'Kantumruy-Light', sans-serif !important; 
                 padding: 20px; 
                 margin: 0;
                 color: #333; 
@@ -3115,10 +3209,10 @@ function generateMonthlyReport() {
         <base href="${window.location.href}">
         <style>
             @font-face {
-                font-family: 'Khmer OS Battambang';
-                src: url('fonts/KhmerOSBattambang.ttf') format('truetype');
+                font-family: 'Kantumruy-Light';
+                src: url('fonts/Kantumruy-Light.ttf') format('truetype');
             }
-            body { font-family: 'Khmer OS Battambang', sans-serif; padding: 40px; color: #333; }
+            body { font-family: 'Kantumruy-Light', sans-serif; padding: 40px; color: #333; }
             .header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 30px; border-bottom: 3px solid #3498db; padding-bottom: 20px; }
             .school-info { display: flex; align-items: center; gap: 20px; }
             .logo { width: 80px; height: 80px; object-fit: cover; border-radius: 10px; border: 2px solid #3498db; }
@@ -3324,6 +3418,7 @@ $(document).ready(function () {
     $('#filterStatus').on('change', function () { currentFilters.status = $(this).val(); renderFilteredTable(); });
     $('#filterTime').on('change', function () { currentFilters.filterTime = $(this).val(); renderFilteredTable(); });
     $('#filterLevel').on('change', function () { currentFilters.filterLevel = $(this).val(); renderFilteredTable(); });
+    $('#filterClass').on('change', function () { currentFilters.filterClass = $(this).val(); renderFilteredTable(); });
     $('#filterGender').on('change', function () { currentFilters.gender = $(this).val(); renderFilteredTable(); });
     $('#startDateFilter').on('change', function () { currentFilters.startDate = $(this).val(); renderFilteredTable(); });
     $('#endDateFilter').on('change', function () { currentFilters.endDate = $(this).val(); renderFilteredTable(); });
@@ -3334,6 +3429,7 @@ $(document).ready(function () {
             status: 'all',
             filterTime: 'all',
             filterLevel: 'all',
+            filterClass: 'all',
             gender: 'all',
             startDate: '',
             endDate: ''
@@ -3342,6 +3438,7 @@ $(document).ready(function () {
         $('#filterStatus').val('all');
         $('#filterTime').val('all');
         $('#filterLevel').val('all');
+        $('#filterClass').val('all');
         $('#filterGender').val('all');
         $('#startDateFilter').val('');
         $('#endDateFilter').val('');
@@ -4049,3 +4146,172 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 });
+
+/**
+ * Handle direct photo upload from Student Details Modal
+ * Compresses image to < 100KB before uploading to Cloudflare R2
+ */
+async function handleDetailPhotoUpload(input, studentKey) {
+    if (!input.files || !input.files[0]) return;
+    
+    const file = input.files[0];
+    const statusEl = document.getElementById('detail_uploadStatus');
+    const previewEl = document.getElementById('detail_photoPreview');
+    
+    // 1. Show Loading
+    if (statusEl) statusEl.classList.remove('d-none');
+    if (previewEl) previewEl.style.opacity = '0.5';
+    
+    try {
+        // 2. Compress Image (Limit to 600px, 0.8 quality = usually < 50KB)
+        const compressedFile = await compressImage(file, 600, 0.8);
+        
+        // Construct prefix using Name and ID
+        const student = window.allStudentsData ? window.allStudentsData[studentKey] : null;
+        let prefix = '';
+        let oldPhotoUrl = null;
+        if (student) {
+            const khmerName = `${student.lastName || ''}_${student.firstName || ''}`.trim();
+            const idGroup = student.displayId || 'NoID';
+            const cleanName = khmerName.replace(/^_+|_+$/g, '').replace(/_+/g, '_');
+            prefix = `${cleanName}_${idGroup}`;
+            
+            // Store old photo URL to delete it later
+            oldPhotoUrl = student.studentPhoto || student.imageUrl;
+        }
+        
+        // 3. Upload to Cloudflare via S3 SDK
+        const imageUrl = await uploadToCloudflare(compressedFile, prefix);
+        
+        // 3.5. Delete old photo from Cloudflare after new upload is successful
+        if (oldPhotoUrl && window.deleteFromCloudflare && oldPhotoUrl !== imageUrl) {
+            window.deleteFromCloudflare(oldPhotoUrl).catch(e => console.error("Failed to delete old photo", e));
+        }
+        
+        // 4. Update Firebase
+        await firebase.database().ref(`students/${studentKey}`).update({
+            studentPhoto: imageUrl,
+            lastUpdated: new Date().toISOString()
+        });
+        
+        // 5. Update Preview on Success
+        if (previewEl) {
+            previewEl.innerHTML = `<img src="${imageUrl}" class="w-100 h-100 object-fit-cover">
+                                   <div class="photo-edit-overlay"><i class="fi fi-rr-camera text-white"></i></div>`;
+            previewEl.style.opacity = '1';
+        }
+        
+        showAlert('កែប្រែរូបថតបានជោគជ័យ!', 'success');
+        
+    } catch (error) {
+        console.error('Photo upload error:', error);
+        showAlert('ការបញ្ជូនរូបថតមិនបានជោគជ័យ: ' + error.message, 'danger');
+        if (previewEl) previewEl.style.opacity = '1';
+    } finally {
+        if (statusEl) statusEl.classList.add('d-none');
+    }
+}
+
+/**
+ * Reusable Image Compression Helper
+ * Returns a Blob (or File) that is resized and compressed
+ */
+function compressImage(file, maxSize = 600, quality = 0.8) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                let width = img.width;
+                let height = img.height;
+                
+                // Keep aspect ratio
+                if (width > height) {
+                    if (width > maxSize) {
+                        height *= maxSize / width;
+                        width = maxSize;
+                    }
+                } else {
+                    if (height > maxSize) {
+                        width *= maxSize / height;
+                        height = maxSize;
+                    }
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                canvas.toBlob((blob) => {
+                    resolve(new File([blob], file.name, { type: 'image/jpeg' }));
+                }, 'image/jpeg', quality);
+            };
+            img.onerror = reject;
+            img.src = e.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+    });
+}
+
+/**
+ * Upload to Cloudflare (Handled by global function in r2-uploader.js)
+ */
+
+
+/**
+ * Remove student photo from profile
+ */
+async function handleRemoveDetailPhoto(event, studentKey) {
+    if (event) event.stopPropagation();
+    
+    const result = await Swal.fire({
+        title: 'តើអ្នកប្រាកដទេ?',
+        text: "អ្នកចង់លុបរូបថតសិស្សនេះចេញមែនទេ?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'បាទ លុបចេញ',
+        cancelButtonText: 'បោះបង់',
+        target: document.getElementById('studentDetailsModal') || document.body
+    });
+
+    if (result.isConfirmed) {
+        try {
+            // Retrieve current photo URL to delete from R2
+            const student = window.allStudentsData ? window.allStudentsData[studentKey] : null;
+            if (student) {
+                const photoToDelete = student.studentPhoto || student.imageUrl;
+                if (photoToDelete && window.deleteFromCloudflare) {
+                    // Start deletion in the background or wait, await is fine
+                    await window.deleteFromCloudflare(photoToDelete);
+                }
+            }
+
+            await firebase.database().ref(`students/${studentKey}`).update({
+                studentPhoto: null,
+                imageUrl: null,
+                lastUpdated: new Date().toISOString()
+            });
+            
+            // Update preview to default icon
+            const previewEl = document.getElementById('detail_photoPreview');
+            if (previewEl) {
+                previewEl.innerHTML = `<i class="fi fi-rr-user text-secondary" style="font-size: 3.5rem;"></i>
+                                       <div class="photo-edit-overlay"><i class="fi fi-rr-camera text-white"></i></div>`;
+            }
+            
+            // Remove the delete button
+            const btn = event.target.closest('button');
+            if (btn) btn.remove();
+            
+            showAlert('លុបរូបថតបានជោគជ័យ!', 'success');
+        } catch (error) {
+            console.error('Remove photo error:', error);
+            showAlert('លុបរូបថតមិនបានសម្រេច!', 'danger');
+        }
+    }
+}

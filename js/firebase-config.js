@@ -17,6 +17,11 @@ const firebaseConfig = {
 if (typeof firebase !== 'undefined') {
     if (!firebase.apps || firebase.apps.length === 0) {
         firebase.initializeApp(firebaseConfig);
+        
+        // Note: Forcing WebSockets via INTERNAL is no longer supported in this SDK version.
+        // If you encounter CORS issues on file:// protocol, please use a local server (e.g. VS Code Live Server).
+        // firebase.database.INTERNAL.forceWebSockets();
+        
         console.log("🔥 Firebase initialized (Centralized)");
     } else {
         console.log("🔥 Firebase already initialized");
