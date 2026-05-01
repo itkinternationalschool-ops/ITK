@@ -114,6 +114,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         const file = e.target.files[0];
                         if (!file) return;
 
+                        // Check if file size exceeds 1MB
+                        if (file.size > 1 * 1024 * 1024) {
+                            Swal.fire('បញ្ហាទំហំរូបភាព', 'សូមជ្រើសរើសរូបភាពដែលមានទំហំមិនលើសពី 1MB!', 'warning');
+                            e.target.value = '';
+                            return;
+                        }
+
                         try {
                             // Show loading state
                             if (avatarPlaceholder) avatarPlaceholder.className = 'fi fi-rr-refresh fa-spin text-primary fa-2x';
@@ -123,13 +130,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             
                             // 2. Upload to Cloudflare
                             const prefix = `User_${user.email.split('@')[0]}`;
-                            const avatarUrl = await window.uploadToCloudflare(compressedFile, prefix);
+                            const avatarUrl = await window.uploadToFirebase(compressedFile, prefix);
                             
                             if (avatarUrl) {
                                 // Delete old avatar from Cloudflare if it exists
                                 const oldAvatar = userData ? userData.avatar : null;
-                                if (oldAvatar && window.deleteFromCloudflare && oldAvatar !== avatarUrl) {
-                                    window.deleteFromCloudflare(oldAvatar).catch(e => console.error("Failed to delete old avatar", e));
+                                if (oldAvatar && window.deleteFromFirebase && oldAvatar !== avatarUrl) {
+                                    window.deleteFromFirebase(oldAvatar).catch(e => console.error("Failed to delete old avatar", e));
                                 }
 
                                 // Update Database

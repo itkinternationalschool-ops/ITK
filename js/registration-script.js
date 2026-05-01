@@ -26,6 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const studentImage = document.getElementById('studentImage');
     const placeholderIcon = document.getElementById('placeholderIcon');
     const uploadStatus = document.getElementById('uploadStatus');
+    const deletePhotoBtn = document.getElementById('deletePhotoBtn');
 
     let isEditMode = false;
     let currentStudentKey = null;
@@ -125,6 +126,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 const file = e.target.files[0];
                 if (!file) return;
 
+                // Check if file size exceeds 1MB
+                if (file.size > 1 * 1024 * 1024) {
+                    Swal.fire('បញ្ហាទំហំរូបភាព', 'សូមជ្រើសរើសរូបភាពដែលមានទំហំមិនលើសពី 1MB!', 'warning');
+                    e.target.value = '';
+                    return;
+                }
+
                 // 1. Preview locally
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -148,7 +156,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     
                     const name = document.getElementById('reg_fullNameKhmer') ? document.getElementById('reg_fullNameKhmer').value.trim() : '';
                     const prefix = name ? `Reg_${name}` : `Reg`;
-                    const imageUrl = await uploadToCloudflare(compressedFile, prefix);
+                    const imageUrl = await uploadToFirebase(compressedFile, prefix);
                     
                     if (imageUrl && photoHidden) {
                         photoHidden.value = imageUrl;
@@ -156,6 +164,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             uploadStatus.textContent = "បញ្ជូនរូបភាពជោគជ័យ!";
                             uploadStatus.className = "small mt-1 text-success";
                         }
+                        if (deletePhotoBtn) deletePhotoBtn.style.display = 'inline-block';
                     }
                 } catch (error) {
                     console.error("Upload failed:", error);
@@ -166,9 +175,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         }
+
+        // Delete Photo Event
+        if (deletePhotoBtn) {
+            deletePhotoBtn.addEventListener('click', async () => {
+                if (photoHidden && photoHidden.value) {
+                    try {
+                        if (uploadStatus) {
+                            uploadStatus.textContent = "កំពុងលុបរូបភាព...";
+                            uploadStatus.className = "small mt-1 text-warning";
+                        }
+                        if (window.deleteFromFirebase) {
+                            await window.deleteFromFirebase(photoHidden.value);
+                        }
+                        photoHidden.value = '';
+                        if (photoInput) photoInput.value = '';
+                        if (studentImage) {
+                            studentImage.src = '';
+                            studentImage.style.display = 'none';
+                        }
+                        if (placeholderIcon) placeholderIcon.style.display = 'block';
+                        deletePhotoBtn.style.display = 'none';
+                        if (uploadStatus) {
+                            uploadStatus.textContent = "លុបរូបភាពជោគជ័យ!";
+                            uploadStatus.className = "small mt-1 text-success";
+                        }
+                    } catch (error) {
+                        console.error("Delete failed:", error);
+                        if (uploadStatus) {
+                            uploadStatus.textContent = "លុបរូបភាពមិនជោគជ័យ!";
+                            uploadStatus.className = "small mt-1 text-danger";
+                        }
+                    }
+                }
+            });
+        }
     }
 
-    // --- Cloudflare Upload Integration (Moved to r2-uploader.js) ---
+    // --- Cloudflare Upload Integration (Moved to firebase-uploader.js) ---
 
 
     function validateForm() {
@@ -492,11 +536,13 @@ document.addEventListener('DOMContentLoaded', function () {
                 studentImage.src = d.studentPhoto;
                 studentImage.style.display = 'block';
                 placeholderIcon.style.display = 'none';
+                if (deletePhotoBtn) deletePhotoBtn.style.display = 'inline-block';
             } else {
                 photoHidden.value = '';
                 studentImage.src = '';
                 studentImage.style.display = 'none';
                 placeholderIcon.style.display = 'block';
+                if (deletePhotoBtn) deletePhotoBtn.style.display = 'none';
             }
 
             setValue('reg_fatherName', d.fatherName);
@@ -610,6 +656,7 @@ document.addEventListener('DOMContentLoaded', function () {
         photoHidden.value = '';
         uploadStatus.textContent = '';
         if (photoInput) photoInput.value = '';
+        if (deletePhotoBtn) deletePhotoBtn.style.display = 'none';
     }
 
     // --- Logic for Custom Study Time ---

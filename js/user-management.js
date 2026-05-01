@@ -398,9 +398,23 @@ function handleCreateUser(e) {
 
 function deleteUser(uid, email) {
     if (confirm(`តើអ្នកពិតជាចង់លុបអ្នកប្រើប្រាស់ ${email} ពីប្រព័ន្ធមែនទេ? \n(ចំណាំ៖ វានឹងលុបតែទិន្នន័យពី Database ប៉ុណ្ណោះ អ្នកត្រូវលុប Login Auth ដោយដៃតាមរយះ Firebase Console ប្រសិនបើចង់លុបដាច់ ១០០%)`)) {
-        usersRef.child(uid).remove()
-            .then(() => alert("បានលុបចេញពីបញ្ជី។"))
-            .catch(err => alert("កំហុស៖ " + err.message));
+        
+        // 1. First get user data to find the avatar URL
+        usersRef.child(uid).once('value').then(async snapshot => {
+            const userData = snapshot.val();
+            if (userData && userData.avatar && window.deleteFromFirebase) {
+                try {
+                    await window.deleteFromFirebase(userData.avatar);
+                } catch (e) {
+                    console.error("Failed to delete user avatar:", e);
+                }
+            }
+            
+            // 2. Delete user from Realtime Database
+            usersRef.child(uid).remove()
+                .then(() => alert("បានលុបចេញពីបញ្ជីនិង Storage ជោគជ័យ។"))
+                .catch(err => alert("កំហុស៖ " + err.message));
+        });
     }
 }
 

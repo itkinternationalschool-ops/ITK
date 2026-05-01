@@ -476,54 +476,129 @@
             .table td.grade-a { background-color: #cce5ff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .table td.grade-f { background-color: #f8d7da !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             
-            /* Vertical Header logic */
-            .vertical-th {
-                writing-mode: vertical-lr;
+            /* Vertical Header logic for Reports */
+            .table th.vertical-th {
+                height: 120px !important;
+                vertical-align: bottom !important;
+                text-align: center !important;
+                padding-bottom: 10px !important;
+            }
+            .vertical-text {
+                writing-mode: vertical-rl;
                 transform: rotate(180deg);
-                text-align: left !important;
-                padding-bottom: 5px !important;
-                padding-left: 8px !important;
                 white-space: nowrap;
-            }
-
-            /* Precise widths for A4 Portrait */
-            .table th:nth-child(1) { width: 32px !important; }  /* N.O */
-            .table th:nth-child(2) { width: 75px !important; }  /* ID */
-            .table th:nth-child(3) { width: 155px !important; } /* Student Name */
-            .table th:nth-child(4) { width: 38px !important; }  /* Sex */
-            /* Score columns 5 to 10 */
-            .table th:nth-child(5), .table th:nth-child(6), .table th:nth-child(7), 
-            .table th:nth-child(8), .table th:nth-child(9), .table th:nth-child(10) { 
-                width: 35px !important; 
-            }
-            /* Result-related columns 11 to 15 */
-            .table th:nth-child(11) { width: 45px !important; } /* Total */
-            .table th:nth-child(12) { width: 45px !important; } /* Average */
-            .table th:nth-child(13) { width: 45px !important; } /* Result */
-            .table th:nth-child(14) { width: 35px !important; } /* Rank */
-            .table th:nth-child(15) { width: 35px !important; } /* Grade */
-
-            .print-summary-section {
-                display: block !important;
-                margin-top: 15px;
-                font-size: 0.85rem;
-                line-height: 1.4;
-            }
-            .score-footer {
-                display: flex !important;
-                margin-top: 10px !important;
-                font-size: 0.85rem !important;
-                border-top: none !important;
-                justify-content: space-between;
-                align-items: flex-start;
-            }
-            .footer-right {
-                text-align: center;
-                width: 200px;
-            }
-            .teacher-signature {
-                margin-top: 60px;
+                display: inline-block;
+                font-family: 'Times New Roman', serif;
                 font-weight: bold;
+            }
+
+            .report-document {
+                background: white;
+                width: 210mm; /* Strict A4 Width */
+                min-height: 297mm;
+                margin: 20px auto;
+                padding: 15mm 10mm;
+                box-shadow: 0 0 20px rgba(0,0,0,0.1);
+                box-sizing: border-box;
+                border: 1px solid #ccc;
+                color: black !important;
+            }
+
+            .report-table {
+                border: 2px solid #000 !important;
+                width: 100% !important;
+                border-collapse: collapse !important;
+                margin-top: 5px;
+            }
+            .report-table thead th {
+                background-color: #1f0637 !important; /* Dark Purple Header */
+                color: white !important;
+                border: 1px solid #444 !important;
+                font-weight: bold;
+                font-size: 0.85rem;
+                padding: 10px 2px !important;
+            }
+            .report-table tbody td {
+                border: 1px solid #000 !important;
+                padding: 6px 4px !important;
+                text-align: center !important;
+                vertical-align: middle !important;
+                color: black !important;
+                font-weight: 500;
+                font-size: 0.9rem;
+            }
+            .report-table .text-start { text-align: left !important; padding-left: 10px !important; }
+
+            .vertical-th {
+                height: 110px !important;
+                vertical-align: bottom !important;
+                padding-bottom: 15px !important;
+            }
+            .vertical-text {
+                writing-mode: vertical-rl;
+                transform: rotate(180deg);
+                white-space: nowrap;
+                display: inline-block;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+            }
+
+            /* Result & Grade Styling Matching Image Exactly */
+            .res-pass { 
+                background-color: #198754 !important; 
+                color: white !important; 
+                font-weight: bold;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+                width: 85%;
+                font-size: 0.8rem;
+            }
+            .res-fail { 
+                background-color: #dc3545 !important; 
+                color: white !important; 
+                font-weight: bold;
+                padding: 4px 8px;
+                border-radius: 4px;
+                display: inline-block;
+                width: 85%;
+                font-size: 0.8rem;
+            }
+            .grade-box { 
+                font-weight: 800; 
+                padding: 4px; 
+                border-radius: 4px; 
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 30px;
+                height: 30px;
+                margin: 0 auto;
+                color: #000 !important;
+                border: 1px solid rgba(0,0,0,0.2);
+                font-size: 0.85rem;
+            }
+            .grade-a { background-color: #cfe2ff !important; }
+            .grade-b { background-color: #e2e3e5 !important; }
+            .grade-c { background-color: #fff3cd !important; }
+            .grade-d { background-color: #d1e7dd !important; }
+            .grade-f { background-color: #f8d7da !important; }
+            .grade-aplus { background-color: #fff3cd !important; border: 2px solid #ffc107; }
+            .grade-f { background-color: #f8d7da !important; }
+            
+            @media print {
+                .report-document { 
+                    width: 100% !important; 
+                    margin: 0 !important; 
+                    padding: 5mm !important; 
+                    box-shadow: none !important; 
+                    border: none !important; 
+                }
+                .report-table thead th {
+                    background-color: #1f0637 !important;
+                    -webkit-print-color-adjust: exact;
+                }
+                @page { size: A4 portrait; margin: 10mm; }
             }
         }
 
@@ -1196,7 +1271,7 @@
                     </div>
                     <div class="dash-action-icons">
                         <button class="icon-action-btn"><i class="fi fi-rr-expand"></i></button>
-                        <button class="icon-action-btn"><i class="fi fi-rr-print"></i> GEIP</button>
+                        <button class="icon-action-btn" onclick="showSection('reports-section')"><i class="fi fi-rr-print"></i> របាយការណ៍</button>
                         <button class="icon-action-btn"><i class="fi fi-rr-search"></i></button>
                     </div>
                 </div>
@@ -1292,9 +1367,14 @@
                         <h5 class="mb-0 text-pink-primary fw-bold small"><i class="fi fi-rr-edit me-1"></i>បញ្ចូលពិន្ទុ</h5>
                     </div>
                     <div class="col-md-2" id="classSelectContainer">
-                        <select id="classSelect" class="form-select border-pink shadow-sm fw-bold">
-                            <option value="">-- គ្រប់ថ្នាក់ --</option>
-                        </select>
+                        <div class="input-group">
+                            <select id="classSelect" class="form-select border-pink shadow-sm fw-bold">
+                                <option value="">-- គ្រប់ថ្នាក់ --</option>
+                            </select>
+                            <button class="btn btn-outline-primary shadow-sm" type="button" onclick="openCreateClassModal()" title="បង្កើតថ្នាក់ និងជ្រើសរើសសិស្ស">
+                                <i class="fi fi-rr-layer-plus"></i>
+                            </button>
+                        </div>
                     </div>
                     <div class="col-md-2">
                         <select id="periodSelect" class="form-select border-pink shadow-sm fw-bold">
@@ -1416,21 +1496,6 @@
                     </div>
                 </div>
 
-                <!-- Custom Footer Section -->
-                <div class="score-footer">
-                    <div class="footer-left">
-                        <!-- Space for left footer if needed -->
-                    </div>
-                    <div class="footer-right">
-                        <div class="fw-bold">ITK, <span id="footerDate">...</span></div>
-                        <div class="fw-bold">Classroom Teacher</div>
-                        <div class="teacher-signature" id="signatureTeacherName" style="border-top: none !important; margin-top: 50px;">
-                            ...
-                        </div>
-                    </div>
-                    </div>
-                </div>
-
             </div>
         </div>
 
@@ -1442,62 +1507,90 @@
                 </button>
             </div>
             
-            <div class="teacher-info-banner">
-                <div>
-                    <span class="text-muted small d-block">គ្រូបង្រៀន៖</span>
-                    <span class="displayTeacherName fw-bold fs-5 text-pink-primary"></span>
+            <div class="report-document bg-white">
+                <!-- Standard Document Header -->
+                <div class="report-header-standard mb-4">
+                    <div class="row align-items-start">
+                        <div class="col-4">
+                            <div class="text-center" style="width: 200px;">
+                                <img src="img/logo.jpg" alt="Logo" style="width: 70px; margin-bottom: 5px;">
+                                <div class="muol" style="font-size: 0.85rem;">សាលាអន្តរជាតិ អាយធីខេ</div>
+                                <div style="font-size: 0.7rem; font-weight: bold;">ITK INTERNATIONAL SCHOOL</div>
+                                <div style="font-size: 0.7rem;">.........................................</div>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center mt-3">
+                            <h3 class="fw-bold mb-1" style="font-family: serif; font-size: 1.6rem; text-decoration: underline;">GENERAL ENGLISH PROGRAM (GEP)</h3>
+                            <div class="fw-bold" style="font-size: 1rem;">
+                                Monthly Total Score Summary | Academic Year (2025-2026)
+                            </div>
+                            <div class="fw-bold mt-1" style="font-size: 0.9rem;">
+                                Teacher: <span class="displayTeacherName">...</span> | <span id="summaryClassDisplay">គ្រប់ថ្នាក់</span>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="fw-bold" style="font-size: 0.9rem;">Kingdom of Cambodia</div>
+                            <div style="font-size: 0.8rem;">National Region King</div>
+                            <div class="muol" style="font-size: 2.5rem; line-height: 1; margin-top: 5px;">៦</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="text-end">
-                    <span class="text-muted small d-block">កាលបរិច្ឆេទ៖</span>
-                    <span class="displayDate fw-bold fs-5 text-pink-primary"></span>
-                </div>
-            </div>
 
-            <div class="score-container score-container-wide">
-                <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="d-flex justify-content-between align-items-center mb-4 reports-controls">
                     <div>
-                        <h4 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-document-signed me-2"></i>សេចក្តីសង្ខេបពិន្ទុសរុប (Monthly Summary)</h4>
-                        <p class="text-muted small mb-0">គ្រូ៖ <span id="summaryTeacherName">...</span> | <span id="summaryClassDisplay">គ្រប់ថ្នាក់</span></p>
+                        <h4 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-document-signed me-2"></i>សេចក្តីសង្ខេបពិន្ទុសរុប</h4>
                     </div>
                     <div class="d-flex gap-2">
                         <select id="summaryClassSelect" class="form-select form-select-sm border-pink shadow-sm fw-bold" style="width: 150px;">
                             <option value="">-- គ្រប់ថ្នាក់ --</option>
                         </select>
-                        <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill">
+                        <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill px-3">
                             <i class="fi fi-rr-print me-1"></i> បោះពុម្ព
                         </button>
                     </div>
                 </div>
+
                 <div class="table-responsive">
-                    <table class="table table-bordered table-hover" id="totalScoresTable">
-                        <thead class="bg-pink-primary text-white">
-                            <tr class="align-middle">
-                                <th class="text-center" style="width: 50px;">ល.រ</th>
-                                <th style="width: 250px;">ឈ្មោះសិស្ស</th>
-                                <th class="text-center" style="width: 60px;">ភេទ</th>
-                                <th class="text-center">Jan</th>
-                                <th class="text-center">Feb</th>
-                                <th class="text-center">Mar</th>
-                                <th class="text-center">Apr</th>
-                                <th class="text-center">May</th>
-                                <th class="text-center">Jun</th>
-                                <th class="text-center">Jul</th>
-                                <th class="text-center">Aug</th>
-                                <th class="text-center">Sep</th>
-                                <th class="text-center">Oct</th>
-                                <th class="text-center">Nov</th>
-                                <th class="text-center">Dec</th>
-                                <th class="text-center bg-primary" style="width: 80px;">សរុប</th>
-                                <th class="text-center bg-success" style="width: 80px;">មធ្យម</th>
+                    <table class="table report-table" id="totalScoresTable">
+                        <thead>
+                            <tr>
+                                <th style="width: 50px;">N.o</th>
+                                <th>Student's Name</th>
+                                <th style="width: 60px;">Sex</th>
+                                <th class="vertical-th"><span class="vertical-text">September</span></th>
+                                <th class="vertical-th"><span class="vertical-text">October</span></th>
+                                <th class="vertical-th"><span class="vertical-text">November</span></th>
+                                <th class="vertical-th"><span class="vertical-text">December</span></th>
+                                <th class="vertical-th"><span class="vertical-text">January</span></th>
+                                <th class="vertical-th"><span class="vertical-text">February</span></th>
+                                <th class="vertical-th"><span class="vertical-text">March</span></th>
+                                <th class="vertical-th"><span class="vertical-text">April</span></th>
+                                <th class="vertical-th"><span class="vertical-text">May</span></th>
+                                <th class="vertical-th"><span class="vertical-text">June</span></th>
+                                <th class="vertical-th"><span class="vertical-text">July</span></th>
+                                <th class="vertical-th"><span class="vertical-text">August</span></th>
+                                <th class="vertical-th"><span class="vertical-text">Total Score</span></th>
+                                <th class="vertical-th"><span class="vertical-text">Average (%)</span></th>
                             </tr>
                         </thead>
                         <tbody id="totalScoresTableBody">
-                            <!-- Data loaded via JS -->
+                            <!-- Populated via JS -->
                         </tbody>
-                        <tfoot id="totalScoresTableFooter" class="bg-light fw-bold">
-                            <!-- Summary stats here -->
-                        </tfoot>
                     </table>
+                </div>
+
+                <!-- Footer Signatures -->
+                <div class="row mt-5 text-center fw-bold reports-controls" style="font-size: 0.9rem;">
+                    <div class="col-4">
+                        <p>Head of Department</p>
+                        <div style="margin-top: 80px;">_______________________</div>
+                    </div>
+                    <div class="col-4"></div>
+                    <div class="col-4">
+                        <p>Class Teacher</p>
+                        <div style="margin-top: 80px;">_______________________</div>
+                        <p class="mt-2 displayTeacherName">...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1509,58 +1602,56 @@
                     <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
                 </button>
             </div>
-            <div class="score-container mt-4">
+            <div class="report-document bg-white">
                 <div id="honorRollSection">
-                    <!-- Standard A4 Header for Printing -->
-                    <div class="d-flex justify-content-between align-items-start mb-4 honor-print-header container-fluid px-2">
-                        <div class="text-center" style="width: 230px;">
-                            <img src="img/1.jpg" alt="Logo" style="width: 90px; margin-bottom: 8px;">
-                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 0.95rem; line-height: 1.4;">សាលាអន្តរជាតិ អាយធីខេ</div>
-                            <div style="font-size: 0.7rem; font-weight: bold; line-height: 1.2; letter-spacing: 0.5px;">ITK INTERNATIONAL SCHOOL</div>
-                            <div style="font-size: 0.8rem; margin-top: 4px;">.........................................</div>
-                        </div>
-                        <div class="text-center flex-grow-1">
-                             <h2 class="fw-bold text-pink-primary mb-0" style="font-family: 'Khmer OS Muol Light'; font-size: 2.8rem; letter-spacing: 1px;">តារាងកិត្តិយស</h2>
-                             <h1 class="fw-bold text-pink-primary mb-2 mt-2" style="font-family: 'Kantumruy-Light'; font-size: 2.3rem; line-height: 1;">HONOR ROLL</h1>
-                             <h4 class="text-dark fw-bold" id="honorPeriodTitle" style="font-size: 1.6rem; font-family: 'Kantumruy-Light'; margin-top: 15px;">...</h4>
-                        </div>
-                        <div class="text-center" style="width: 230px;">
-                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 1.1rem; line-height: 1.4;">ព្រះរាជាណាចក្រកម្ពុជា</div>
-                            <div style="font-family: 'Khmer OS Muol Light'; font-size: 1rem; line-height: 1.4;">ជាតិ សាសនា ព្រះមហាក្សត្រ</div>
-                            <div class="mt-2">
-                                <img src="https://img.icons8.com/color/48/cambodia.png" style="width: 45px;">
+                    <!-- Standard Document Header -->
+                    <div class="report-header-standard mb-4">
+                        <div class="row align-items-start">
+                            <div class="col-4">
+                                <div class="text-center" style="width: 200px;">
+                                    <img src="img/logo.jpg" alt="Logo" style="width: 70px; margin-bottom: 5px;">
+                                    <div class="muol" style="font-size: 0.85rem;">សាលាអន្តរជាតិ អាយធីខេ</div>
+                                    <div style="font-size: 0.7rem; font-weight: bold;">ITK INTERNATIONAL SCHOOL</div>
+                                    <div style="font-size: 0.7rem;">.........................................</div>
+                                </div>
+                            </div>
+                            <div class="col-4 text-center mt-3">
+                                <h3 class="fw-bold mb-1" style="font-family: 'Khmer OS Muol Light'; font-size: 2.2rem; color: #1f0637;">តារាងកិត្តិយស</h3>
+                                <h4 class="fw-bold mb-2" style="font-family: serif; font-size: 1.8rem; letter-spacing: 2px;">HONOR ROLL</h4>
+                                <div class="fw-bold mt-3" id="honorPeriodTitle" style="font-size: 1.2rem; color: #d63384;">...</div>
+                                <div class="fw-bold mt-1" style="font-size: 0.9rem;">
+                                    Teacher: <span id="honorTeacherName">...</span>
+                                </div>
+                            </div>
+                            <div class="col-4 text-end">
+                                <div class="fw-bold" style="font-size: 0.9rem;">Kingdom of Cambodia</div>
+                                <div style="font-size: 0.8rem;">National Region King</div>
+                                <div class="muol" style="font-size: 2.5rem; line-height: 1; margin-top: 5px;">៦</div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="mt-4 text-center text-dark fw-bold mb-5" style="font-size: 1.5rem;">
-                        គ្រូបង្រៀន (Teacher): <span id="honorTeacherName" class="text-decoration-underline">...</span>
-                    </div>
-                    
-                    <div class="honor-board p-5 rounded-5 shadow-sm">
+                    <div class="honor-board p-4 rounded-5 border-0">
                         <div class="row g-4 justify-content-center" id="honorRollCards">
                             <!-- Premium Cards Loaded Here -->
                         </div>
                     </div>
 
-                    <div class="honor-footer-info">
-                        <div class="row mt-5">
-                            <div class="col-6">
-                                <p>Head of Department</p>
-                                <div style="margin-top: 60px;">_______________________</div>
-                            </div>
-                            <div class="col-6 text-end">
-                                <p>Date: ................................</p>
-                                <p>Class Teacher</p>
-                                <div style="margin-top: 40px; font-weight: bold;" id="honorTeacherSignature">...</div>
-                            </div>
+                    <div class="row mt-5 text-center fw-bold reports-controls" style="font-size: 0.9rem;">
+                        <div class="col-4">
+                            <p>Head of Department</p>
+                            <div style="margin-top: 80px;">_______________________</div>
                         </div>
-                    </div>
-
-                    <div class="text-end mt-4">
-                        <button onclick="window.print()" class="btn btn-pink-primary rounded-pill px-4 btn-print-honor">
-                            <i class="fi fi-rr-print me-2"></i> បោះពុម្ពតារាងកិត្តិយស
-                        </button>
+                        <div class="col-4">
+                            <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill px-4 mt-5">
+                                <i class="fi fi-rr-print me-2"></i> បោះពុម្ពតារាងកិត្តិយស
+                            </button>
+                        </div>
+                        <div class="col-4">
+                            <p>Class Teacher</p>
+                            <div style="margin-top: 80px;">_______________________</div>
+                            <p class="mt-2" id="honorTeacherSignature">...</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1667,55 +1758,52 @@
                     <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
                 </button>
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm rounded-pill" onclick="window.print()">
-                        <i class="fi fi-rr-print me-1"></i> បោះពុម្ពលិខិតសរសើរ
-                    </button>
-                    <button class="btn btn-outline-pink-primary btn-sm rounded-pill" onclick="toggleCertificatePreview()">
-                        <i class="fi fi-rr-eye me-1"></i> មើលគំរូ
+                    <button class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" onclick="window.print()">
+                        <i class="fi fi-rr-print me-1"></i> បោះពុម្ពទាំងអស់
                     </button>
                 </div>
             </div>
             
-            <div class="row g-4">
-                <div class="col-lg-5">
-                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-                        <div class="card-header bg-white border-0 p-4 pb-0">
-                            <h4 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-users me-2"></i>បញ្ជីសិស្សឆ្នើម</h4>
-                            <p class="text-muted small mb-0">ជ្រើសរើសសិស្សដើម្បីពិនិត្យលិខិតសរសើរ</p>
-                        </div>
-                        <div class="card-body p-4">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle">
-                                    <thead class="bg-light">
-                                        <tr class="text-muted small">
-                                            <th style="width: 50px;">ល.រ</th>
-                                            <th>ឈ្មោះសិស្ស</th>
-                                            <th style="width: 100px;">មធ្យមភាគ</th>
-                                            <th style="width: 100px;" class="text-center">សកម្មភាព</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="certificateStudentList">
-                                        <!-- Loaded via JS -->
-                                    </tbody>
-                                </table>
+            <div class="report-document bg-white" style="max-width: 1200px; padding: 20px;">
+                <div class="row g-4">
+                    <div class="col-lg-4">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 bg-light">
+                            <div class="card-header bg-white border-0 p-4 pb-0 rounded-top-4">
+                                <h5 class="fw-bold text-pink-primary mb-1"><i class="fi fi-rr-users me-2"></i>សិស្សឆ្នើមទាំង ១០</h5>
+                                <p class="text-muted small mb-0">ចុចលើសិស្សដើម្បីមើលប័ណ្ណសរសើរ</p>
+                            </div>
+                            <div class="card-body p-3">
+                                <div class="table-responsive" style="max-height: 500px;">
+                                    <table class="table table-hover align-middle small">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>N.o</th>
+                                                <th>Name</th>
+                                                <th>Avg</th>
+                                                <th class="text-center">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="certificateStudentList">
+                                            <!-- Loaded via JS -->
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div class="col-lg-7">
-                    <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100" style="background: #f1f3f6;">
-                        <div class="card-header bg-white border-0 p-3 d-flex justify-content-between align-items-center">
-                            <span class="fw-bold text-muted small"><i class="fi fi-rr-document me-1"></i> ទិដ្ឋភាពលិខិតសរសើរ (Live Preview)</span>
-                            <div class="d-flex gap-2">
-                                <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-bill">A4 Landscape Mode</span>
+                    
+                    <div class="col-lg-8">
+                        <div class="card border-0 shadow-sm rounded-4 h-100" style="background: #eef1f5;">
+                            <div class="card-header bg-white border-0 p-3 d-flex justify-content-between align-items-center rounded-top-4">
+                                <span class="fw-bold text-muted small"><i class="fi fi-rr-eye me-1"></i> លទ្ធផលមើលមុន (Preview)</span>
+                                <span class="badge bg-soft-primary text-primary px-3 py-2 rounded-pill">A4 Landscape</span>
                             </div>
-                        </div>
-                        
-                        <div class="card-body p-0 d-flex justify-content-center align-items-start overflow-auto" style="min-height: 650px; background: #eef1f5; background-image: radial-gradient(#d1d9e6 1px, transparent 1px); background-size: 20px 20px;">
-                            <div class="cert-preview-wrapper p-5">
-                                <div id="uiCertificatePreview" class="certificate-paper-preview">
-                                     <!-- Content injected by JS -->
+                            
+                            <div class="card-body p-0 d-flex justify-content-center align-items-center overflow-hidden" style="min-height: 550px;">
+                                <div class="cert-preview-container" style="transform: scale(0.65); transform-origin: center center;">
+                                    <div id="uiCertificatePreview">
+                                         <!-- Content injected by JS -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1724,19 +1812,96 @@
             </div>
         </div>
 
-        <!-- NEW: Reports Section -->
+        <!-- Reports Section: Trimester Summary matching user image -->
         <div id="reports-section" class="d-none animate__animated animate__fadeIn">
-            <div class="mb-3">
+            <div class="mb-3 d-flex justify-content-between align-items-center reports-controls">
                 <button class="btn btn-light btn-sm rounded-pill px-3 shadow-sm" onclick="showSection('teacher-dashboard')">
                     <i class="fi fi-rr-arrow-left me-1"></i> ត្រឡប់ទៅ Dashboard
                 </button>
+                <div class="d-flex gap-2">
+                    <select id="reportTrimesterSelect" class="form-select form-select-sm fw-bold border-pink" style="width: 180px;" onchange="renderTrimesterReport()">
+                        <option value="T1">Trimester I (Sep-Nov)</option>
+                        <option value="T2">Trimester II (Dec-Feb)</option>
+                        <option value="T3" selected>Trimester III (Mar-May)</option>
+                    </select>
+                    <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill px-3">
+                        <i class="fi fi-rr-print me-1"></i> បោះពុម្ពរបាយការណ៍
+                    </button>
+                </div>
             </div>
             
-            <div class="score-container">
-                <div class="text-center py-5">
-                    <i class="fi fi-rr-stats text-muted mb-3" style="font-size: 4rem;"></i>
-                    <h3 class="fw-bold text-pink-primary">របាយការណ៍សរុប (Reports)</h3>
-                    <p class="text-muted">មុខងារនេះកំពុងត្រូវបានរៀបចំ...</p>
+            <div class="report-document bg-white">
+                <!-- Standard Document Header -->
+                <div class="report-header-standard mb-4">
+                    <div class="row align-items-start">
+                        <div class="col-4">
+                            <div class="text-center" style="width: 200px;">
+                                <img src="img/logo.jpg" alt="Logo" style="width: 70px; margin-bottom: 5px;">
+                                <div class="muol" style="font-size: 0.85rem;">សាលាអន្តរជាតិ អាយធីខេ</div>
+                                <div style="font-size: 0.7rem; font-weight: bold;">ITK INTERNATIONAL SCHOOL</div>
+                                <div style="font-size: 0.7rem;">.........................................</div>
+                            </div>
+                        </div>
+                        <div class="col-4 text-center mt-3">
+                            <h3 class="fw-bold mb-1" style="font-family: serif; font-size: 1.6rem; text-decoration: underline;">GENERAL ENGLISH PROGRAM (GEP)</h3>
+                            <div class="fw-bold" style="font-size: 1rem;">
+                                Exam Result for <span id="reportPeriodName" class="text-danger">Trimester III</span> | Academic Year (2025-2026)
+                            </div>
+                            <div class="fw-bold mt-1" style="font-size: 0.9rem;">
+                                English Level: <span id="reportLevelDisplay">K2</span> | ROOM: <span id="reportRoomDisplay">LAB1</span> Time: <span id="reportTimeDisplay">5:00PM-6:00PM</span>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="fw-bold" style="font-size: 0.9rem;">Kingdom of Cambodia</div>
+                            <div style="font-size: 0.8rem;">National Region King</div>
+                            <div class="muol" style="font-size: 2.5rem; line-height: 1; margin-top: 5px;">៦</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Report Table -->
+                <div class="table-responsive">
+                    <table class="table report-table" id="trimesterReportTable">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" style="width: 40px;">N.o</th>
+                                <th rowspan="2" style="width: 100px;">Student ID</th>
+                                <th rowspan="2">Student's Name</th>
+                                <th rowspan="2" style="width: 50px;">Sex</th>
+                                <th colspan="3" id="trimesterMonthsHeader" class="text-center">Months</th>
+                                <th rowspan="2" class="vertical-th"><span class="vertical-text">Total:</span></th>
+                                <th rowspan="2" class="vertical-th"><span class="vertical-text">Average</span></th>
+                                <th rowspan="2" class="vertical-th"><span class="vertical-text">Result</span></th>
+                                <th rowspan="2" class="vertical-th"><span class="vertical-text">Rank</span></th>
+                                <th rowspan="2" class="vertical-th"><span class="vertical-text">Grade</span></th>
+                            </tr>
+                            <tr id="reportMonthSubHeader">
+                                <!-- Months will be injected here -->
+                                <th class="vertical-th"><span class="vertical-text">March</span></th>
+                                <th class="vertical-th"><span class="vertical-text">April</span></th>
+                                <th class="vertical-th"><span class="vertical-text">May</span></th>
+                            </tr>
+                        </thead>
+                        <tbody id="trimesterReportTableBody">
+                            <!-- Data injected via JS -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Footer Signatures -->
+                <div class="row mt-5 text-center fw-bold" style="font-size: 0.9rem;">
+                    <div class="col-4">
+                        <p>Head of Department</p>
+                        <div style="margin-top: 80px;">_______________________</div>
+                    </div>
+                    <div class="col-4">
+                        <!-- Space -->
+                    </div>
+                    <div class="col-4">
+                        <p>Class Teacher</p>
+                        <div style="margin-top: 80px;">_______________________</div>
+                        <p class="mt-2 displayTeacherName">...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2195,10 +2360,73 @@
         }
     </style>
 
+
+    <!-- Class Management Modal -->
+    <div class="modal fade" id="createClassModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-0 bg-light rounded-top-4">
+                    <h5 class="modal-title fw-bold text-pink-primary">
+                        <i class="fi fi-rr-layer-plus me-2"></i> គ្រប់គ្រងថ្នាក់រៀន និងសិស្ស
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <div class="row mb-4">
+                        <div class="col-md-6 mb-3 mb-md-0">
+                            <label class="form-label fw-bold small">ជ្រើសរើសថ្នាក់ (Select Class)</label>
+                            <select id="manageClassSelect" class="form-select form-select-lg border-primary" onchange="onManageClassSelectChange()">
+                                <option value="NEW">-- បង្កើតថ្នាក់រៀនថ្មី (Create New Class) --</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6" id="newClassInputContainer">
+                            <label class="form-label fw-bold small">ឈ្មោះថ្នាក់រៀនថ្មី (New Class Name) <span class="text-danger">*</span></label>
+                            <input type="text" id="newClassNameInput" class="form-control form-control-lg border-primary" placeholder="ឧ. K1, K2, Grade 7A...">
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <label class="form-label fw-bold small mb-0">ជ្រើសរើសសិស្សចូលក្នុងថ្នាក់នេះ (Select Students)</label>
+                        <div class="input-group" style="width: 250px;">
+                            <span class="input-group-text bg-white border-end-0"><i class="fi fi-rr-search"></i></span>
+                            <input type="text" id="searchStudentForClass" class="form-control border-start-0" placeholder="ស្វែងរកសិស្ស..." oninput="filterStudentsForClass()">
+                        </div>
+                    </div>
+                    
+                    <div class="table-responsive border rounded shadow-sm" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-hover table-bordered mb-0">
+                            <thead class="table-light sticky-top">
+                                <tr>
+                                    <th class="text-center" style="width: 50px;">
+                                        <input type="checkbox" class="form-check-input" id="selectAllForClass" onchange="toggleSelectAllForClass(this)">
+                                    </th>
+                                    <th>អត្តលេខ (ID)</th>
+                                    <th>ឈ្មោះសិស្ស (Name)</th>
+                                    <th>ភេទ (Sex)</th>
+                                    <th>ថ្នាក់បច្ចុប្បន្ន (Current Class)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentSelectionTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 bg-light rounded-bottom-4">
+                    <button type="button" class="btn btn-secondary px-4 rounded-pill" data-bs-dismiss="modal">បោះបង់</button>
+                    <button type="button" class="btn btn-pink-primary px-4 rounded-pill fw-bold" onclick="saveNewClass()">
+                        <i class="fi fi-rr-disk me-1"></i> រក្សាទុក
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Firebase SDKs (v9 Compat) -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-storage-compat.js"></script>
 
     <!-- UI Core Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
@@ -2206,12 +2434,11 @@
 
     <!-- Project Scripts -->
     <script src="js/firebase-config.js"></script>
-    <script src="js/r2-config.js"></script>
-    <script src="js/r2-uploader.js"></script>
+    <script src="js/firebase-uploader.js"></script>
     <script src="js/auth-check.js"></script>
     <script src="js/loader.js"></script>
     <script src="js/sidebar-loader.js"></script>
-    <script src="js/teacher-scores-script.js"></script>
+    <script src="js/teacher-scores-script.js?v=3"></script>
 
     <script>
         // Update footer date and signature dynamically after login

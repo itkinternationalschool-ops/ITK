@@ -131,14 +131,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     window.showSection = function(sectionId) {
-        const sections = ['login-section', 'teacher-dashboard', 'score-section', 'total-scores-section', 'honor-roll-view-section', 'settings-section', 'certificate-section'];
+        const sections = ['login-section', 'teacher-dashboard', 'score-section', 'total-scores-section', 'honor-roll-view-section', 'settings-section', 'certificate-section', 'reports-section'];
         sections.forEach(id => {
             const el = document.getElementById(id);
             if (el) el.classList.add('d-none');
         });
 
         document.body.classList.toggle('dashboard-body', sectionId === 'teacher-dashboard');
-        document.body.classList.toggle('printing-honor-roll', sectionId === 'honor-roll-view-section');
 
         const target = document.getElementById(sectionId);
         if (target) {
@@ -146,8 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
             target.classList.add('animate__animated', 'animate__fadeIn');
         }
 
-        refreshActiveDisplay();
         if (sectionId === 'settings-section') initSettingsPage();
+        if (sectionId === 'reports-section') renderTrimesterReport();
+        if (sectionId === 'total-scores-section') renderTotalScoresSummary();
+        if (sectionId === 'honor-roll-view-section') updateHonorRoll();
+        if (sectionId === 'certificate-section') populateCertificates();
     };
 
     // === 7. SCORE TABLE ENGINE ===
@@ -364,6 +366,50 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // === 11. TOTAL SCORES SUMMARY ENGINE ===
+
+    window.renderTotalScoresSummary = function() {
+        const body = document.getElementById('totalScoresTableBody');
+        const classFilter = document.getElementById('summaryClassSelect').value;
+        if (!body) return;
+
+        body.innerHTML = '';
+        const teacherStudents = allStudents.filter(s => s.teacherName === currentTeacherName && s.status !== 'dropped' && s.status !== 'completed');
+        const filtered = classFilter ? teacherStudents.filter(s => (s.classRoom || s.class || s.grade) === classFilter) : teacherStudents;
+
+        const months = ["September", "October", "November", "December", "January", "February", "March", "April", "May", "June", "July", "August"];
+
+        filtered.forEach((s, idx) => {
+            const scores = months.map(m => {
+                const monthData = (s.monthlyScores && s.monthlyScores[m]) || {};
+                return monthData.totalScore || 0;
+            });
+
+            const total = scores.reduce((a, b) => a + b, 0);
+            const activeMonths = scores.filter(v => v > 0).length;
+            const avg = activeMonths > 0 ? (total / activeMonths) : 0;
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td class="text-start fw-bold">${(s.englishLastName||'').toUpperCase()} ${(s.englishFirstName||'').toUpperCase()}</td>
+                <td>${s.gender==='Female'?'F':'M'}</td>
+                ${scores.map(val => `<td>${val > 0 ? val.toFixed(1) : '-'}</td>`).join('')}
+                <td class="fw-bold bg-light">${total.toFixed(1)}</td>
+                <td class="fw-bold bg-light text-primary">${avg.toFixed(1)}%</td>
+            `;
+            body.appendChild(tr);
+        });
+
+        if (filtered.length === 0) {
+            body.innerHTML = `<tr><td colspan="${3 + months.length + 2}" class="py-4 text-muted italic">មិនមានទិន្នន័យសម្រាប់ថ្នាក់ដែលបានជ្រើសរើសឡើយ</td></tr>`;
+        }
+    };
+
+    // Re-render when class filter changes
+    document.getElementById('summaryClassSelect')?.addEventListener('change', renderTotalScoresSummary);
+
+
     // === 8. DATA SAVING ACTIONS ===
 
     window.saveSingleRow = async function(sid) {
@@ -449,6 +495,173 @@ document.addEventListener('DOMContentLoaded', function () {
         bootstrap.Modal.getInstance(document.getElementById('editScoreModal')).hide();
     };
 
+    // === 9.5 CLASS MANAGEMENT ===
+
+    let selectedClassStudentIds = new Set();
+
+    window.openCreateClassModal = function() {
+        document.getElementById('newClassNameInput').value = '';
+        document.getElementById('searchStudentForClass').value = '';
+        document.getElementById('selectAllForClass').checked = false;
+        
+        const teacherStudents = allStudents.filter(s => s.teacherName === currentTeacherName && s.status !== 'dropped' && s.status !== 'completed');
+        const classes = [...new Set(teacherStudents.map(s => s.classRoom || s.class || s.grade).filter(c => c))].sort();
+        
+        const manageClassSelect = document.getElementById('manageClassSelect');
+        manageClassSelect.innerHTML = '<option value="NEW">-- បង្កើតថ្នាក់រៀនថ្មី (Create New Class) --</option>';
+        classes.forEach(c => {
+            const opt = document.createElement('option');
+            opt.value = c;
+            opt.textContent = `ថ្នាក់៖ ${c}`;
+            manageClassSelect.appendChild(opt);
+        });
+        
+        manageClassSelect.value = 'NEW';
+        window.onManageClassSelectChange();
+        
+        new bootstrap.Modal(document.getElementById('createClassModal')).show();
+    };
+
+    window.onManageClassSelectChange = function() {
+        const val = document.getElementById('manageClassSelect').value;
+        const newClassContainer = document.getElementById('newClassInputContainer');
+        
+        if (val === 'NEW') {
+            newClassContainer.classList.remove('d-none');
+        } else {
+            newClassContainer.classList.add('d-none');
+        }
+        
+        document.getElementById('searchStudentForClass').value = '';
+        document.getElementById('selectAllForClass').checked = false;
+        
+        selectedClassStudentIds.clear();
+        if (val !== 'NEW') {
+            const classStudents = allStudents.filter(s => (s.classRoom || s.class || s.grade) === val && s.teacherName === currentTeacherName);
+            classStudents.forEach(s => selectedClassStudentIds.add(s.id));
+        }
+        
+        renderStudentSelectionTable('');
+    };
+
+    window.filterStudentsForClass = function() {
+        const query = document.getElementById('searchStudentForClass').value.toLowerCase();
+        renderStudentSelectionTable(query);
+    };
+
+    function renderStudentSelectionTable(query) {
+        const tbody = document.getElementById('studentSelectionTableBody');
+        tbody.innerHTML = '';
+        
+        const activeStudents = allStudents.filter(s => s.status !== 'dropped' && s.status !== 'completed');
+        
+        const filtered = activeStudents.filter(s => {
+            const name = `${(s.englishLastName || '').toLowerCase()} ${(s.englishFirstName || '').toLowerCase()}`;
+            const id = (s.displayId || s.studentID || '').toLowerCase();
+            return name.includes(query) || id.includes(query);
+        }).sort((a, b) => {
+            const nameA = `${(a.englishLastName || '').toLowerCase()} ${(a.englishFirstName || '').toLowerCase()}`;
+            const nameB = `${(b.englishLastName || '').toLowerCase()} ${(b.englishFirstName || '').toLowerCase()}`;
+            return nameA.localeCompare(nameB);
+        });
+
+        if (filtered.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-3 text-muted">រកមិនឃើញសិស្ស</td></tr>';
+            return;
+        }
+
+        filtered.forEach(s => {
+            const name = `${(s.englishLastName || '').toUpperCase()} ${(s.englishFirstName || '').toUpperCase()}`;
+            const sex = s.gender === 'Female' ? 'ស្រី' : 'ប្រុស';
+            const currClass = s.classRoom || s.class || s.grade || 'គ្មាន';
+            
+            const isChecked = selectedClassStudentIds.has(s.id);
+            
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="text-center">
+                    <input type="checkbox" class="form-check-input class-student-checkbox" value="${s.id}" ${isChecked ? 'checked' : ''} onchange="toggleStudentSelection(this)">
+                </td>
+                <td><span class="badge bg-light text-dark">${s.displayId || s.studentID || ''}</span></td>
+                <td class="fw-bold">${name}</td>
+                <td>${sex}</td>
+                <td><span class="badge ${currClass === 'គ្មាន' ? 'bg-secondary' : 'bg-info'}">${currClass}</span></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    window.toggleStudentSelection = function(checkbox) {
+        if (checkbox.checked) {
+            selectedClassStudentIds.add(checkbox.value);
+        } else {
+            selectedClassStudentIds.delete(checkbox.value);
+        }
+    };
+
+    window.toggleSelectAllForClass = function(el) {
+        document.querySelectorAll('.class-student-checkbox').forEach(c => {
+            c.checked = el.checked;
+            window.toggleStudentSelection(c);
+        });
+    };
+
+    window.saveNewClass = async function() {
+        const manageSelectVal = document.getElementById('manageClassSelect').value;
+        let targetClassName = '';
+        
+        if (manageSelectVal === 'NEW') {
+            targetClassName = document.getElementById('newClassNameInput').value.trim();
+            if (!targetClassName) {
+                Swal.fire('Warning', 'សូមបញ្ចូលឈ្មោះថ្នាក់រៀន!', 'warning');
+                return;
+            }
+        } else {
+            targetClassName = manageSelectVal;
+        }
+
+        Swal.fire({ title: 'កំពុងរក្សាទុក...', didOpen: () => Swal.showLoading() });
+
+        const updates = {};
+        const activeStudents = allStudents.filter(s => s.status !== 'dropped' && s.status !== 'completed');
+        
+        activeStudents.forEach(s => {
+            const currClass = s.classRoom || s.class || s.grade;
+            const inSet = selectedClassStudentIds.has(s.id);
+            const inClass = (currClass === targetClassName && s.teacherName === currentTeacherName);
+            
+            if (inSet && !inClass) {
+                updates[`students/${s.id}/classRoom`] = targetClassName;
+                updates[`students/${s.id}/teacherName`] = currentTeacherName;
+            } else if (!inSet && inClass) {
+                updates[`students/${s.id}/classRoom`] = ""; 
+            }
+        });
+
+        if (Object.keys(updates).length === 0 && manageSelectVal !== 'NEW') {
+            bootstrap.Modal.getInstance(document.getElementById('createClassModal')).hide();
+            Swal.fire({ icon: 'info', title: 'គ្មានការផ្លាស់ប្តូរ', timer: 1000, showConfirmButton: false });
+            return;
+        }
+
+        try {
+            await firebase.database().ref().update(updates);
+            Swal.fire({ icon: 'success', title: 'ជោគជ័យ!', text: 'ទិន្នន័យត្រូវបានរក្សាទុក', timer: 1500, showConfirmButton: false });
+            bootstrap.Modal.getInstance(document.getElementById('createClassModal')).hide();
+            
+            setTimeout(() => {
+                populateClassDropdowns(currentTeacherName);
+                if(els.classSelect) {
+                    els.classSelect.value = targetClassName;
+                }
+                renderScoreTable();
+            }, 800);
+            
+        } catch (error) {
+            Swal.fire('Error', error.message, 'error');
+        }
+    };
+
     // === 10. HONOR ROLL & CERTIFICATES ===
 
     function updateHonorRoll() {
@@ -508,6 +721,92 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     };
 
+    window.renderTrimesterReport = function() {
+        const body = document.getElementById('trimesterReportTableBody');
+        const trimester = document.getElementById('reportTrimesterSelect').value;
+        const selClass = els.summaryClassSelect.value;
+        if (!body) return;
+
+        const trimesters = {
+            'T1': ['September', 'October', 'November'],
+            'T2': ['December', 'January', 'February'],
+            'T3': ['March', 'April', 'May']
+        };
+        const months = trimesters[trimester] || trimesters['T3'];
+        
+        document.getElementById('reportPeriodName').textContent = trimester === 'T1' ? 'Trimester I' : trimester === 'T2' ? 'Trimester II' : 'Trimester III';
+        document.getElementById('reportMonthSubHeader').innerHTML = months.map(m => `<th class="vertical-th"><span class="vertical-text">${m}</span></th>`).join('');
+
+        const filtered = allStudents.filter(s => s.teacherName === currentTeacherName && s.status !== 'dropped' && (!selClass || (s.classRoom || s.class || s.grade) === selClass));
+        
+        const studentsWithStats = filtered.map(s => {
+            let total = 0, count = 0;
+            let mScores = months.map(m => {
+                const ms = s.monthlyScores?.[m];
+                const t = ms ? (parseFloat(ms.attendance||0)+parseFloat(ms.homework||0)+parseFloat(ms.discipline||0)+parseFloat(ms.actionClass||0)+parseFloat(ms.book||0)+parseFloat(ms.exam||0)) : 0;
+                if (t > 0) { total += t; count++; }
+                return t;
+            });
+            const avg = count > 0 ? total / count : 0;
+            return { ...s, mScores, total, avg };
+        }).sort((a, b) => b.avg - a.avg);
+
+        let currentRank = 0;
+        let lastAvg = -1;
+        body.innerHTML = '';
+        studentsWithStats.forEach((s, idx) => {
+            if (s.avg !== lastAvg) {
+                currentRank = idx + 1;
+            }
+            lastAvg = s.avg;
+            
+            const displayRank = s.avg > 0 ? currentRank : '-';
+            const res = s.avg >= 50 ? 'Pass' : s.avg > 0 ? 'Fail' : '-';
+            const gradeInfo = getGradeAndClass(s.avg);
+            
+            // Handle A+ if needed (e.g. > 95)
+            let gradeHtml = `<span class="grade-box ${gradeInfo.grade==='F'?'grade-f':'grade-a'}">${gradeInfo.grade || '-'}</span>`;
+            if (s.avg >= 98) {
+                gradeHtml = `<span class="grade-box grade-aplus">A+</span>`;
+            } else if (gradeInfo.grade === 'A') {
+                gradeHtml = `<span class="grade-box grade-a">A</span>`;
+            } else if (gradeInfo.grade === 'B') {
+                gradeHtml = `<span class="grade-box grade-b">B</span>`;
+            } else if (gradeInfo.grade === 'C') {
+                gradeHtml = `<span class="grade-box grade-c">C</span>`;
+            } else if (gradeInfo.grade === 'D') {
+                gradeHtml = `<span class="grade-box grade-d">D</span>`;
+            } else if (gradeInfo.grade === 'F') {
+                gradeHtml = `<span class="grade-box grade-f">F</span>`;
+            }
+
+            if (idx === 0) {
+                safeSetText('reportLevelDisplay', s.classRoom || s.grade || 'K2');
+                safeSetText('reportRoomDisplay', s.room || 'LAB1');
+                safeSetText('reportTimeDisplay', s.studyTime || '5:00PM-6:00PM');
+            }
+
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${idx + 1}</td>
+                <td><span class="badge bg-light text-dark">${s.displayId || s.studentID || ''}</span></td>
+                <td class="text-start fw-bold">${(s.englishLastName||'').toUpperCase()} ${(s.englishFirstName||'').toUpperCase()}</td>
+                <td>${s.gender==='Female'?'F':'M'}</td>
+                ${s.mScores.map(val => `<td>${val > 0 ? val.toFixed(1) : '-'}</td>`).join('')}
+                <td class="fw-bold">${s.total.toFixed(1)}</td>
+                <td class="fw-bold">${s.avg.toFixed(1)}</td>
+                <td><span class="${res === 'Pass' ? 'res-pass' : 'res-fail'}">${res}</span></td>
+                <td>${displayRank}</td>
+                <td>${gradeHtml}</td>
+            `;
+            body.appendChild(tr);
+        });
+        
+        if (studentsWithStats.length === 0) {
+            body.innerHTML = '<tr><td colspan="12" class="py-5 text-muted">មិនមានទិន្នន័យសម្រាប់ថ្នាក់នេះទេ</td></tr>';
+        }
+    };
+
     async function loadMonthConfig() {
         const snap = await firebase.database().ref('settings/monthConfig').once('value');
         const data = snap.val();
@@ -549,7 +848,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (els.dashMonthSelect) els.dashMonthSelect.onchange = (e) => { currentSelectedMonth = e.target.value; els.monthSelect.value = currentSelectedMonth; renderScoreTable(); };
     els.periodSelect.onchange = (e) => { currentPeriod = e.target.value; document.getElementById('monthSelectContainer').classList.toggle('d-none', currentPeriod !== 'monthly'); renderScoreTable(); };
     els.classSelect.onchange = renderScoreTable;
-    if (els.summaryClassSelect) els.summaryClassSelect.onchange = renderTotalScores;
+    if (els.summaryClassSelect) els.summaryClassSelect.onchange = renderTotalScoresSummary;
 
     document.getElementById('togglePassword').onclick = function() {
         const t = els.teacherSecret.type === 'password' ? 'text' : 'password';

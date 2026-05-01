@@ -1692,8 +1692,8 @@ async function deleteStudent(key, displayId) {
         const student = window.allStudentsData ? window.allStudentsData[key] : null;
         if (student) {
             const photoToDelete = student.studentPhoto || student.imageUrl;
-            if (photoToDelete && window.deleteFromCloudflare) {
-                await window.deleteFromCloudflare(photoToDelete);
+            if (photoToDelete && window.deleteFromFirebase) {
+                await window.deleteFromFirebase(photoToDelete);
             }
         }
 
@@ -4145,6 +4145,31 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     });
+
+    // Handle URL parameters for filters (Quick Filters from Sidebar)
+    const urlParams = new URLSearchParams(window.location.search);
+    const filterParam = urlParams.get('filter');
+    if (filterParam && window.currentFilters) {
+        if (filterParam === 'pay-today') {
+            window.currentFilters.status = 'today';
+        } else if (filterParam === 'overdue') {
+            window.currentFilters.status = 'overdue';
+        } else if (filterParam === 'debt') {
+            window.currentFilters.status = 'pending';
+        } else if (filterParam === 'postponed') {
+            window.currentFilters.status = 'installment';
+        } else if (filterParam === 'nearing-due') {
+            window.currentFilters.status = 'warning';
+        }
+        
+        // Update the select element in UI if it exists
+        const statusSelect = document.getElementById('filterStatus');
+        if (statusSelect) {
+            statusSelect.value = window.currentFilters.status;
+        }
+        
+        // Note: loadStudentData() is called globally and will use these filters when rendering.
+    }
 });
 
 /**
@@ -4155,6 +4180,14 @@ async function handleDetailPhotoUpload(input, studentKey) {
     if (!input.files || !input.files[0]) return;
     
     const file = input.files[0];
+    
+    // Check if file size exceeds 1MB
+    if (file.size > 1 * 1024 * 1024) {
+        Swal.fire('បញ្ហាទំហំរូបភាព', 'សូមជ្រើសរើសរូបភាពដែលមានទំហំមិនលើសពី 1MB!', 'warning');
+        input.value = '';
+        return;
+    }
+
     const statusEl = document.getElementById('detail_uploadStatus');
     const previewEl = document.getElementById('detail_photoPreview');
     
@@ -4181,11 +4214,11 @@ async function handleDetailPhotoUpload(input, studentKey) {
         }
         
         // 3. Upload to Cloudflare via S3 SDK
-        const imageUrl = await uploadToCloudflare(compressedFile, prefix);
+        const imageUrl = await uploadToFirebase(compressedFile, prefix);
         
         // 3.5. Delete old photo from Cloudflare after new upload is successful
-        if (oldPhotoUrl && window.deleteFromCloudflare && oldPhotoUrl !== imageUrl) {
-            window.deleteFromCloudflare(oldPhotoUrl).catch(e => console.error("Failed to delete old photo", e));
+        if (oldPhotoUrl && window.deleteFromFirebase && oldPhotoUrl !== imageUrl) {
+            window.deleteFromFirebase(oldPhotoUrl).catch(e => console.error("Failed to delete old photo", e));
         }
         
         // 4. Update Firebase
@@ -4257,7 +4290,7 @@ function compressImage(file, maxSize = 600, quality = 0.8) {
 }
 
 /**
- * Upload to Cloudflare (Handled by global function in r2-uploader.js)
+ * Upload to Cloudflare (Handled by global function in firebase-uploader.js)
  */
 
 
@@ -4285,9 +4318,9 @@ async function handleRemoveDetailPhoto(event, studentKey) {
             const student = window.allStudentsData ? window.allStudentsData[studentKey] : null;
             if (student) {
                 const photoToDelete = student.studentPhoto || student.imageUrl;
-                if (photoToDelete && window.deleteFromCloudflare) {
+                if (photoToDelete && window.deleteFromFirebase) {
                     // Start deletion in the background or wait, await is fine
-                    await window.deleteFromCloudflare(photoToDelete);
+                    await window.deleteFromFirebase(photoToDelete);
                 }
             }
 

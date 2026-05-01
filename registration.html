@@ -157,6 +157,9 @@
                                     <button type="button" class="btn btn-outline-primary btn-sm mt-2 rounded-pill" onclick="document.getElementById('reg_photoInput').click()">
                                         <i class="fi fi-rr-camera me-1"></i> ប្តូររូបថត
                                     </button>
+                                    <button type="button" id="deletePhotoBtn" class="btn btn-outline-danger btn-sm mt-2 rounded-pill" style="display: none;">
+                                        <i class="fi fi-rr-trash me-1"></i> លុប
+                                    </button>
                                     <input type="file" id="reg_photoInput" accept="image/*" style="display: none;">
                                     <input type="hidden" id="reg_studentPhoto" name="studentPhoto">
                                     <div id="uploadStatus" class="small mt-1 text-muted"></div>
@@ -668,8 +671,7 @@
 
     <!-- App Scripts -->
     <script src="js/firebase-config.js"></script>
-    <script src="js/r2-config.js"></script>
-    <script src="js/r2-uploader.js"></script>
+    <script src="js/firebase-uploader.js"></script>
     <script src="js/auth-check.js"></script>
     <script src="js/registration-script.js"></script>
     <script src="js/loader.js"></script>

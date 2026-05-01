@@ -42,6 +42,7 @@ const SIDEBAR_HTML = `
         <a class="nav-link" href="teacher-scores.html">
             <i class="fi fi-rr-edit"></i> បញ្ចូលពិន្ទុប្រចាំខែ
         </a>
+
     </nav>
 
     <hr class="sidebar-divider my-2 mx-3" style="border-top: 1px solid rgba(255,255,255,0.3);">

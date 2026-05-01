@@ -221,9 +221,23 @@ function deleteForever(studentKey) {
         cancelButtonColor: '#3085d6',
         confirmButtonText: '<i class="fi fi-rr-trash"></i> បាទ/ចាស លុបចេញ',
         cancelButtonText: 'បោះបង់'
-    }).then((result) => {
+    }).then(async (result) => {
         if (result.isConfirmed) {
             showLoading();
+            
+            // Delete photo from Firebase Storage if it exists
+            const student = allDropoutStudents.find(s => s.key === studentKey);
+            if (student && (student.studentPhoto || student.imageUrl)) {
+                const photoToDelete = student.studentPhoto || student.imageUrl;
+                if (window.deleteFromFirebase) {
+                    try {
+                        await window.deleteFromFirebase(photoToDelete);
+                    } catch (e) {
+                        console.error("Failed to delete dropout student photo:", e);
+                    }
+                }
+            }
+
             firebase.database().ref('students/' + studentKey).remove()
                 .then(() => {
                     hideLoading();
